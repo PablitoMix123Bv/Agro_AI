@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
-import { theme } from '../theme/theme';
-import { Card } from '../components/Card';
-import { Button } from '../components/Button';
+import { theme } from '../../theme/theme';
+import { Card } from '../../components/Card';
+import { Button } from '../../components/Button';
 import { Droplets, Thermometer, Wind, Sprout, BrainCircuit } from 'lucide-react-native';
 
 export const HomeScreen = () => {
