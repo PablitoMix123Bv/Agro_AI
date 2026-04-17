@@ -1,78 +1,106 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
-import { Home, Droplets, BarChart2, Settings } from 'lucide-react-native';
-
-import { HomeScreen } from '../screens/Dashboard/HomeScreen';
+import { LayoutGrid, Sprout, BarChart3, Bell, User } from 'lucide-react-native';
+import { View, Text } from 'react-native';
+import { Primer_pantalla } from '../screens/Auth/Primer_pantalla';
+import { Login_Screen } from '../screens/Auth/Login_Screen';
+import { Registrar_usuario } from '../screens/Auth/Registrar_usuario';
+import { Pagina_principal } from '../screens/Dashboard/Pagina_principal';
 import { IrrigationScreen } from '../screens/Fields/IrrigationScreen';
 import { StatsScreen } from '../screens/Dashboard/StatsScreen';
 import { theme } from '../theme/theme';
-import { View, Text } from 'react-native';
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
-// Placeholder for Settings until implemented
-const SettingsScreen = () => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background }}>
-    <Text style={{ color: theme.colors.text }}>Configuración</Text>
+const PlaceholderScreen = ({ title }) => (
+  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F8F9FA' }}>
+    <Text style={{ color: '#166534', fontSize: 18, fontWeight: 'bold' }}>{title}</Text>
   </View>
 );
+
+const MainTabs = () => {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: {
+          backgroundColor: '#FFFFFF',
+          borderTopColor: '#E5E7EB',
+          borderTopWidth: 1,
+          paddingBottom: 8,
+          paddingTop: 8,
+          height: 70,
+        },
+        tabBarActiveTintColor: '#166534',
+        tabBarInactiveTintColor: '#9CA3AF',
+        tabBarLabelStyle: {
+          fontSize: 10,
+          fontWeight: '700',
+          marginTop: 4,
+          letterSpacing: 0.5,
+        }
+      }}
+    >
+      <Tab.Screen 
+        name="Inicio" 
+        component={Pagina_principal} 
+        options={{
+          tabBarLabel: 'INICIO',
+          tabBarIcon: ({ color, size }) => <LayoutGrid color={color} size={24} />
+        }}
+      />
+      <Tab.Screen 
+        name="Campos" 
+        options={{
+          tabBarLabel: 'CAMPOS',
+          tabBarIcon: ({ color, size }) => <Sprout color={color} size={24} />
+        }}
+      >
+        {() => <PlaceholderScreen title="Campos" />}
+      </Tab.Screen>
+      <Tab.Screen 
+        name="Datos" 
+        options={{
+          tabBarLabel: 'DATOS',
+          tabBarIcon: ({ color, size }) => <BarChart3 color={color} size={24} />
+        }}
+      >
+        {() => <PlaceholderScreen title="Datos" />}
+      </Tab.Screen>
+      <Tab.Screen 
+        name="Alertas" 
+        options={{
+          tabBarLabel: 'ALERTAS',
+          tabBarIcon: ({ color, size }) => <Bell color={color} size={24} />
+        }}
+      >
+        {() => <PlaceholderScreen title="Alertas" />}
+      </Tab.Screen>
+      <Tab.Screen 
+        name="Perfil" 
+        options={{
+          tabBarLabel: 'PERFIL',
+          tabBarIcon: ({ color, size }) => <User color={color} size={24} />
+        }}
+      >
+        {() => <PlaceholderScreen title="Perfil" />}
+      </Tab.Screen>
+    </Tab.Navigator>
+  );
+};
 
 export const AppNavigator = () => {
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={{
-          headerShown: false,
-          tabBarStyle: {
-            backgroundColor: theme.colors.surface,
-            borderTopColor: theme.colors.border,
-            borderTopWidth: 1,
-            paddingBottom: theme.spacing.sm,
-            paddingTop: theme.spacing.sm,
-            height: 65,
-          },
-          tabBarActiveTintColor: theme.colors.primary,
-          tabBarInactiveTintColor: theme.colors.textSecondary,
-          tabBarLabelStyle: {
-            fontSize: 12,
-            marginTop: 4,
-          }
-        }}
-      >
-        <Tab.Screen 
-          name="Home" 
-          component={HomeScreen} 
-          options={{
-            tabBarLabel: 'Inicio',
-            tabBarIcon: ({ color, size }) => <Home color={color} size={size} />
-          }}
-        />
-        <Tab.Screen 
-          name="Irrigation" 
-          component={IrrigationScreen} 
-          options={{
-            tabBarLabel: 'Riego',
-            tabBarIcon: ({ color, size }) => <Droplets color={color} size={size} />
-          }}
-        />
-        <Tab.Screen 
-          name="Stats" 
-          component={StatsScreen} 
-          options={{
-            tabBarLabel: 'Estadísticas',
-            tabBarIcon: ({ color, size }) => <BarChart2 color={color} size={size} />
-          }}
-        />
-        <Tab.Screen 
-          name="Settings" 
-          component={SettingsScreen} 
-          options={{
-            tabBarLabel: 'Ajustes',
-            tabBarIcon: ({ color, size }) => <Settings color={color} size={size} />
-          }}
-        />
-      </Tab.Navigator>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Splash" component={Primer_pantalla} />
+        <Stack.Screen name="Login" component={Login_Screen} />
+        <Stack.Screen name="Register" component={Registrar_usuario} />
+        <Stack.Screen name="MainTabs" component={MainTabs} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };

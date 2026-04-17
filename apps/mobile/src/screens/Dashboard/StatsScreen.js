@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
-import { theme } from '../theme/theme';
-import { Card } from '../components/Card';
+import { theme } from '../../theme/theme';
+import { Card } from '../../components/Card';
 import { LineChart, BarChart } from 'lucide-react-native';
 
 export const StatsScreen = () => {

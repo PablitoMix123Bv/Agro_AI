@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Switch, SafeAreaView } from 'react-native';
-import { theme } from '../theme/theme';
-import { Card } from '../components/Card';
-import { Button } from '../components/Button';
+import { theme } from '../../theme/theme';
+import { Card } from '../../components/Card';
+import { Button } from '../../components/Button';
 import { Droplets, Settings2, Clock } from 'lucide-react-native';
 
 export const IrrigationScreen = () => {
