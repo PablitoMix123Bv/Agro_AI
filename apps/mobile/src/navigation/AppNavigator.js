@@ -1,22 +1,16 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import { Home, Droplets, BarChart2, Settings } from 'lucide-react-native';
+import { LayoutGrid, Sprout, FileText, Bell, User } from 'lucide-react-native';
 
 import { HomeScreen } from '../screens/Dashboard/HomeScreen';
-import { IrrigationScreen } from '../screens/Fields/IrrigationScreen';
+import { FieldsScreen } from '../screens/Fields/FieldsScreen';
 import { StatsScreen } from '../screens/Dashboard/StatsScreen';
+import { AlertsScreen } from '../screens/Alerts/AlertsScreen';
+import { ProfileScreen } from '../screens/Profile/ProfileScreen';
 import { theme } from '../theme/theme';
-import { View, Text } from 'react-native';
 
 const Tab = createBottomTabNavigator();
-
-// Placeholder for Settings until implemented
-const SettingsScreen = () => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background }}>
-    <Text style={{ color: theme.colors.text }}>Configuración</Text>
-  </View>
-);
 
 export const AppNavigator = () => {
   return (
@@ -28,48 +22,62 @@ export const AppNavigator = () => {
             backgroundColor: theme.colors.surface,
             borderTopColor: theme.colors.border,
             borderTopWidth: 1,
-            paddingBottom: theme.spacing.sm,
+            paddingBottom: theme.spacing.md,
             paddingTop: theme.spacing.sm,
-            height: 65,
+            height: 80,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: -2 },
+            shadowOpacity: 0.05,
+            shadowRadius: 10,
+            elevation: 10,
           },
-          tabBarActiveTintColor: theme.colors.primary,
+          tabBarActiveTintColor: theme.colors.primaryDark,
           tabBarInactiveTintColor: theme.colors.textSecondary,
           tabBarLabelStyle: {
-            fontSize: 12,
+            fontSize: 10,
+            fontWeight: '600',
             marginTop: 4,
           }
         }}
       >
         <Tab.Screen 
-          name="Home" 
+          name="Inicio" 
           component={HomeScreen} 
           options={{
-            tabBarLabel: 'Inicio',
-            tabBarIcon: ({ color, size }) => <Home color={color} size={size} />
+            tabBarLabel: 'INICIO',
+            tabBarIcon: ({ color, size }) => <LayoutGrid color={color} size={22} />
           }}
         />
         <Tab.Screen 
-          name="Irrigation" 
-          component={IrrigationScreen} 
+          name="Campos" 
+          component={FieldsScreen} 
           options={{
-            tabBarLabel: 'Riego',
-            tabBarIcon: ({ color, size }) => <Droplets color={color} size={size} />
+            tabBarLabel: 'CAMPOS',
+            tabBarIcon: ({ color, size }) => <Sprout color={color} size={26} /> // Slightly larger as it's the active one in Figma
           }}
         />
         <Tab.Screen 
-          name="Stats" 
+          name="Datos" 
           component={StatsScreen} 
           options={{
-            tabBarLabel: 'Estadísticas',
-            tabBarIcon: ({ color, size }) => <BarChart2 color={color} size={size} />
+            tabBarLabel: 'DATOS',
+            tabBarIcon: ({ color, size }) => <FileText color={color} size={22} />
           }}
         />
         <Tab.Screen 
-          name="Settings" 
-          component={SettingsScreen} 
+          name="Alertas" 
+          component={AlertsScreen} 
           options={{
-            tabBarLabel: 'Ajustes',
-            tabBarIcon: ({ color, size }) => <Settings color={color} size={size} />
+            tabBarLabel: 'ALERTAS',
+            tabBarIcon: ({ color, size }) => <Bell color={color} size={22} />
+          }}
+        />
+        <Tab.Screen 
+          name="Perfil" 
+          component={ProfileScreen} 
+          options={{
+            tabBarLabel: 'PERFIL',
+            tabBarIcon: ({ color, size }) => <User color={color} size={22} />
           }}
         />
       </Tab.Navigator>
