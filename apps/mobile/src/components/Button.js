@@ -9,7 +9,8 @@ export const Button = ({
   variant = 'primary', 
   loading = false, 
   icon,
-  style 
+  style,
+  textStyle
 }) => {
   if (variant === 'primary') {
     return (
@@ -17,23 +18,16 @@ export const Button = ({
         onPress={onPress} 
         activeOpacity={0.8}
         disabled={loading}
-        style={[styles.container, style]}
+        style={[styles.container, styles.primaryContainer, style]}
       >
-        <LinearGradient
-          colors={theme.colors.primaryGradient}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.gradient}
-        >
-          {loading ? (
-            <ActivityIndicator color={theme.colors.text} />
-          ) : (
-            <>
-              {icon && icon}
-              <Text style={styles.text}>{title}</Text>
-            </>
-          )}
-        </LinearGradient>
+        {loading ? (
+          <ActivityIndicator color="#FFFFFF" />
+        ) : (
+          <>
+            {icon && icon}
+            <Text style={[styles.primaryText, textStyle]}>{title}</Text>
+          </>
+        )}
       </TouchableOpacity>
     );
   }
@@ -43,14 +37,14 @@ export const Button = ({
       onPress={onPress} 
       activeOpacity={0.7}
       disabled={loading}
-      style={[styles.outlineContainer, style]}
+      style={[styles.container, styles.outlineContainer, style]}
     >
       {loading ? (
-        <ActivityIndicator color={theme.colors.primary} />
+        <ActivityIndicator color={theme.colors.primaryDark} />
       ) : (
         <>
           {icon && icon}
-          <Text style={styles.outlineText}>{title}</Text>
+          <Text style={[styles.outlineText, textStyle]}>{title}</Text>
         </>
       )}
     </TouchableOpacity>
@@ -59,38 +53,31 @@ export const Button = ({
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: theme.borderRadius.md,
-    overflow: 'hidden',
-    ...theme.shadows.soft,
-  },
-  gradient: {
     paddingVertical: theme.spacing.md,
     paddingHorizontal: theme.spacing.xl,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
     gap: theme.spacing.sm,
+    borderRadius: theme.borderRadius.md,
   },
-  text: {
-    color: theme.colors.text,
+  primaryContainer: {
+    backgroundColor: theme.colors.primaryDark,
+    ...theme.shadows.soft,
+  },
+  primaryText: {
+    color: '#FFFFFF',
     fontSize: theme.typography.sizes.md,
     fontWeight: '600',
     letterSpacing: 0.5,
   },
   outlineContainer: {
-    paddingVertical: theme.spacing.md,
-    paddingHorizontal: theme.spacing.xl,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    gap: theme.spacing.sm,
-    borderWidth: 1,
-    borderColor: theme.colors.primary,
-    borderRadius: theme.borderRadius.md,
     backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: theme.colors.primaryDark,
   },
   outlineText: {
-    color: theme.colors.primary,
+    color: theme.colors.primaryDark,
     fontSize: theme.typography.sizes.md,
     fontWeight: '600',
     letterSpacing: 0.5,

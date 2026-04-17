@@ -1,16 +1,18 @@
 export const theme = {
   colors: {
-    background: '#0B131E', // Very dark slate/blue
-    surface: '#1A2436', // Lighter slate for cards
-    surfaceHighlight: '#233045', // Hover/highlight state
-    primary: '#10B981', // Emerald green
-    primaryGradient: ['#10B981', '#059669'], // Vibrant green gradient
-    accent: '#A3E635', // Lime accent
-    text: '#F8FAFC',
-    textSecondary: '#94A3B8',
-    danger: '#EF4444',
+    background: '#F9FAFB', // Light gray background
+    surface: '#FFFFFF', // White cards
+    surfaceHighlight: '#F3F4F6', // Hover/highlight state
+    primary: '#10B981', // Emerald green (accents, badges)
+    primaryDark: '#166534', // Dark green (main buttons, primary text)
+    primaryGradient: ['#10B981', '#059669'],
+    accent: '#84CC16', // Lime green
+    text: '#111827', // Very dark gray/black
+    textSecondary: '#6B7280', // Gray
+    danger: '#EF4444', // Red for critical alerts
+    dangerBackground: '#FEF2F2',
     warning: '#F59E0B',
-    border: '#334155',
+    border: '#E5E7EB', // Light gray border
   },
   spacing: {
     xs: 4,
@@ -29,7 +31,7 @@ export const theme = {
   },
   typography: {
     fontFamily: {
-      regular: 'System', // Will use Inter/Roboto if loaded, but System is safe
+      regular: 'System',
       bold: 'System',
     },
     sizes: {
@@ -45,17 +47,17 @@ export const theme = {
   shadows: {
     soft: {
       shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.1,
-      shadowRadius: 12,
-      elevation: 5,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.05,
+      shadowRadius: 10,
+      elevation: 3,
     },
     glow: {
       shadowColor: '#10B981',
-      shadowOffset: { width: 0, height: 0 },
-      shadowOpacity: 0.5,
-      shadowRadius: 15,
-      elevation: 10,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.2,
+      shadowRadius: 12,
+      elevation: 6,
     }
   }
 };
