@@ -32,6 +32,41 @@ export const Login_Screen = ({ navigation }) => {
   const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const isFormValid = isValidEmail && password.length > 0;
 
+
+  //login function
+
+  const handleLogin = async () => {
+  // 1. Verificación básica de campos vacíos
+  if (!email || !password) {
+    alert("Por favor ingresa correo y contraseña");
+    return;
+  }
+
+  try {
+    const response = await fetch('http://172.20.10.7:5000/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await response.json();
+
+    // 2. ¡ESTA ES LA CLAVE! 
+    // Solo si el servidor responde con un status 200 (ok)
+    if (response.ok) {
+      console.log("Login exitoso", data);
+      navigation.replace('MainTabs'); // <--- Solo entra aquí si los datos son correctos
+    } else {
+      // 3. Si el usuario no existe o la contraseña está mal, mostramos el error del back
+      alert(data.msg || "Error en el inicio de sesión");
+    }
+
+  } catch (error) {
+    console.error(error);
+    alert("Error de conexión. Revisa que el servidor esté corriendo.");
+  }
+};
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style={isDarkMode ? 'light' : 'dark'} />
@@ -124,7 +159,7 @@ export const Login_Screen = ({ navigation }) => {
               <TouchableOpacity
                 style={[styles.loginButton, !isFormValid && styles.loginButtonDisabled]}
                 disabled={!isFormValid}
-                onPress={() => navigation.replace('MainTabs')}
+                onPress={handleLogin}
               >
                 <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
                 <ArrowRight color="#FFFFFF" size={20} />
