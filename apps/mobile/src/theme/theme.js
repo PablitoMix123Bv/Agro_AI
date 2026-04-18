@@ -3,9 +3,9 @@ export const lightTheme = {
     background: '#F9FAFB',
     surface: '#FFFFFF',
     surfaceHighlight: '#F3F4F6',
-    primary: '#10B981',
-    primaryDark: '#166534',
-    primaryGradient: ['#10B981', '#059669'],
+    primary: '#064E3B',
+    primaryDark: '#064E3B',
+    primaryGradient: ['#064E3B', '#064E3B'],
     accent: '#84CC16',
     text: '#111827',
     textSecondary: '#6B7280',
@@ -53,7 +53,7 @@ export const lightTheme = {
       elevation: 3,
     },
     glow: {
-      shadowColor: '#10B981',
+      shadowColor: '#064E3B',
       shadowOffset: { width: 0, height: 4 },
       shadowOpacity: 0.2,
       shadowRadius: 12,
@@ -69,14 +69,13 @@ export const darkTheme = {
     background: '#0D1B2A', // Dark navy requested
     surface: '#1A2B3C',    // Darker card requested
     surfaceHighlight: '#253341',
-    primary: '#2E7D32',    // Darker green requested
-    primaryDark: '#1B5E20',
-    primaryGradient: ['#2E7D32', '#1B5E20'],
+    primary: '#064E3B',    // Standardized green
+    primaryDark: '#064E3B',
+    primaryGradient: ['#064E3B', '#064E3B'],
     text: '#FFFFFF',       // Primary white text
     textSecondary: '#9E9E9E', // Secondary grey text
     border: '#253341',
     dangerBackground: '#450a0a',
-    surfaceHighlight: '#1F2F3F',
   },
   shadows: {
     ...lightTheme.shadows,
@@ -87,7 +86,7 @@ export const darkTheme = {
     },
     glow: {
       ...lightTheme.shadows.glow,
-      shadowColor: '#2E7D32',
+      shadowColor: '#064E3B',
     }
   }
 };

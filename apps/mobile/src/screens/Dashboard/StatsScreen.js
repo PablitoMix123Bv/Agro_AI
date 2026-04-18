@@ -22,7 +22,7 @@ export const StatsScreen = () => {
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
 
         {/* Standard Header */}
-        <Header />
+        <Header showUser={false} />
 
         {/* Titles Section */}
         <View style={styles.titleSection}>
@@ -80,7 +80,7 @@ export const StatsScreen = () => {
               <Path
                 d="M 0 80 Q 30 60 60 80 T 120 100 T 180 30 T 240 80 T 300 40"
                 fill="none"
-                stroke={isPerformanceMode ? "#D9F99D" : theme.colors.primary}
+                stroke={isPerformanceMode ? "#064E3B" : theme.colors.primary}
                 strokeWidth="3"
               />
             </Svg>
@@ -96,7 +96,7 @@ export const StatsScreen = () => {
         <Card style={styles.historyCard}>
           <View style={styles.historyHeader}>
             <Text style={styles.historyTitle}>Historial de Riego</Text>
-            <Clock color={isPerformanceMode ? "#D9F99D" : theme.colors.primary} size={18} />
+            <Clock color={isPerformanceMode ? "#064E3B" : theme.colors.primary} size={18} />
           </View>
 
           <HistoryItem
@@ -163,8 +163,8 @@ export const StatsScreen = () => {
               {showFullHistory ? "Ver Menos" : "Ver Toda la Actividad"}
             </Text>
             {showFullHistory ? 
-              <ChevronUp color={isPerformanceMode ? "#D9F99D" : theme.colors.primary} size={16} /> : 
-              <ChevronDown color={isPerformanceMode ? "#D9F99D" : theme.colors.primary} size={16} />
+              <ChevronUp color={isPerformanceMode ? "#064E3B" : theme.colors.primary} size={16} /> : 
+              <ChevronDown color={isPerformanceMode ? "#064E3B" : theme.colors.primary} size={16} />
             }
           </TouchableOpacity>
         </Card>
@@ -186,7 +186,7 @@ const HistoryItem = ({ title, time, type, isLast, theme, isPerformanceMode, isDa
         historyStyles.historyIconWrapper, 
         { backgroundColor: theme.colors.surfaceHighlight },
       ]}>
-        <Droplets color={isPerformanceMode ? "#D9F99D" : theme.colors.primary} size={16} />
+        <Droplets color={isPerformanceMode ? "#064E3B" : theme.colors.primary} size={16} />
       </View>
       <View style={historyStyles.historyContent}>
         <Text style={[historyStyles.historyItemTitle, { color: theme.colors.text }]}>{title}</Text>
@@ -198,7 +198,7 @@ const HistoryItem = ({ title, time, type, isLast, theme, isPerformanceMode, isDa
       ]}>
         <Text style={[
           historyStyles.badgeText, 
-          isAuto ? { color: isDarkMode ? '#81C784' : '#166534' } : { color: isDarkMode ? '#9E9E9E' : '#8A6D3B' },
+          isAuto ? { color: isDarkMode ? '#064E3B' : '#064E3B' } : { color: isDarkMode ? '#9E9E9E' : '#8A6D3B' },
         ]}>{type}</Text>
       </View>
     </View>
@@ -278,7 +278,7 @@ const getStyles = (theme, isPerformanceMode, isDarkMode) => StyleSheet.create({
     marginBottom: theme.spacing.lg,
   },
   preTitle: {
-    color: isPerformanceMode ? '#D9F99D' : theme.colors.danger,
+    color: isPerformanceMode ? '#064E3B' : theme.colors.danger,
     fontSize: 10,
     fontWeight: 'bold',
     letterSpacing: 1,
@@ -292,7 +292,7 @@ const getStyles = (theme, isPerformanceMode, isDarkMode) => StyleSheet.create({
     marginBottom: 8,
   },
   exportButton: {
-    backgroundColor: isPerformanceMode ? 'rgba(217, 249, 157, 0.2)' : theme.colors.surfaceHighlight,
+    backgroundColor: isPerformanceMode ? 'rgba(6, 78, 59, 0.2)' : theme.colors.surfaceHighlight,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 12,
@@ -300,10 +300,10 @@ const getStyles = (theme, isPerformanceMode, isDarkMode) => StyleSheet.create({
     marginTop: 8,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: isPerformanceMode ? '#D9F99D' : theme.colors.border,
+    borderColor: isPerformanceMode ? '#064E3B' : theme.colors.border,
   },
   exportButtonText: {
-    color: isPerformanceMode ? '#D9F99D' : theme.colors.primary,
+    color: isPerformanceMode ? '#064E3B' : theme.colors.primary,
     fontWeight: 'bold',
     fontSize: 14,
   },
@@ -313,7 +313,7 @@ const getStyles = (theme, isPerformanceMode, isDarkMode) => StyleSheet.create({
     padding: theme.spacing.xl,
     marginBottom: theme.spacing.lg,
     borderWidth: isPerformanceMode ? 1 : 0,
-    borderColor: '#D9F99D',
+    borderColor: '#064E3B',
   },
   efficiencyHeader: {
     flexDirection: 'row',
@@ -367,7 +367,7 @@ const getStyles = (theme, isPerformanceMode, isDarkMode) => StyleSheet.create({
     marginTop: 2,
   },
   daysBadge: {
-    backgroundColor: isPerformanceMode ? '#D9F99D' : isDarkMode ? 'rgba(158, 158, 158, 0.1)' : '#F3E8D6',
+    backgroundColor: isPerformanceMode ? '#064E3B' : isDarkMode ? 'rgba(158, 158, 158, 0.1)' : '#F3E8D6',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,

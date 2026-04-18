@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TextInput, 
-  TouchableOpacity, 
-  KeyboardAvoidingView, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  KeyboardAvoidingView,
   Platform,
   ScrollView,
   Modal,
@@ -47,7 +47,7 @@ export const Registrar_usuario = ({ navigation }) => {
 
     try {
       // 2. Petición al Backend (Usa la IP de tu ROG Strix)
-      const response = await fetch('http://172.20.10.7:5000/api/auth/register', {
+      const response = await fetch('http://172.20.10.2:5000/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ export const Registrar_usuario = ({ navigation }) => {
 
       if (response.ok) {
         alert("¡Usuario creado con éxito!");
-        navigation.replace('MainTabs'); 
+        navigation.replace('MainTabs');
       } else {
         alert(data.msg || "Error al registrar");
       }
@@ -81,17 +81,17 @@ export const Registrar_usuario = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style={isDarkMode ? 'light' : 'dark'} />
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         style={styles.keyboardView}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-          
+
           {/* Standard Header */}
           <Header showUser={false} />
 
           <View style={styles.card}>
-            
+
             {/* Header */}
             <View style={styles.headerContainer}>
               <View style={styles.headerTexts}>
@@ -104,14 +104,14 @@ export const Registrar_usuario = ({ navigation }) => {
 
             {/* Formulario */}
             <View style={styles.form}>
-              
+
               {/* Nombre Completo */}
               <View style={styles.inputGroup}>
                 <Text style={styles.label}>NOMBRE COMPLETO</Text>
                 <View style={styles.inputContainer}>
                   <User color={theme.colors.textSecondary} size={20} style={styles.inputIcon} />
-                  <TextInput 
-                    style={styles.input} 
+                  <TextInput
+                    style={styles.input}
                     placeholder="Ej. Juan Pérez"
                     placeholderTextColor={theme.colors.textSecondary}
                     value={name}
@@ -125,8 +125,8 @@ export const Registrar_usuario = ({ navigation }) => {
                 <Text style={styles.label}>CORREO ELECTRÓNICO</Text>
                 <View style={styles.inputContainer}>
                   <AtSign color={theme.colors.textSecondary} size={20} style={styles.inputIcon} />
-                  <TextInput 
-                    style={styles.input} 
+                  <TextInput
+                    style={styles.input}
                     placeholder="tu@correo.com"
                     placeholderTextColor={theme.colors.textSecondary}
                     keyboardType="email-address"
@@ -142,8 +142,8 @@ export const Registrar_usuario = ({ navigation }) => {
                 <Text style={styles.label}>CONTRASEÑA</Text>
                 <View style={styles.inputContainer}>
                   <Lock color={theme.colors.textSecondary} size={20} style={styles.inputIcon} />
-                  <TextInput 
-                    style={styles.input} 
+                  <TextInput
+                    style={styles.input}
                     placeholder="••••••••"
                     placeholderTextColor={theme.colors.textSecondary}
                     secureTextEntry
@@ -158,8 +158,8 @@ export const Registrar_usuario = ({ navigation }) => {
                 <Text style={styles.label}>CONFIRMAR CONTRASEÑA</Text>
                 <View style={styles.inputContainer}>
                   <Key color={theme.colors.textSecondary} size={20} style={styles.inputIcon} />
-                  <TextInput 
-                    style={styles.input} 
+                  <TextInput
+                    style={styles.input}
                     placeholder="••••••••"
                     placeholderTextColor={theme.colors.textSecondary}
                     secureTextEntry
@@ -171,7 +171,7 @@ export const Registrar_usuario = ({ navigation }) => {
 
               {/* Términos y Condiciones */}
               <View style={styles.checkboxContainer}>
-                <TouchableOpacity 
+                <TouchableOpacity
                   onPress={() => setTermsAccepted(!termsAccepted)}
                   activeOpacity={0.7}
                   style={styles.checkboxIconWrapper}
@@ -188,7 +188,7 @@ export const Registrar_usuario = ({ navigation }) => {
               </View>
 
               {/* Botón Crear Cuenta */}
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={[styles.createButton, !termsAccepted && styles.createButtonDisabled]}
                 disabled={!termsAccepted}
                 /// manda a llamar a la función de registro al backend
@@ -210,7 +210,7 @@ export const Registrar_usuario = ({ navigation }) => {
             {/* Botón Google */}
             <TouchableOpacity style={styles.googleButton}>
               <View style={styles.googleIconPlaceholder}>
-                <Text style={{color: '#EA4335', fontWeight: 'bold'}}>G</Text>
+                <Text style={{ color: '#EA4335', fontWeight: 'bold' }}>G</Text>
               </View>
               <Text style={styles.googleButtonText}>Google</Text>
             </TouchableOpacity>
@@ -234,8 +234,8 @@ export const Registrar_usuario = ({ navigation }) => {
         animationType="fade"
         onRequestClose={() => setShowTerms(false)}
       >
-        <Pressable 
-          style={styles.modalOverlay} 
+        <Pressable
+          style={styles.modalOverlay}
           onPress={() => setShowTerms(false)}
         >
           <View style={styles.modalContent}>
@@ -245,7 +245,7 @@ export const Registrar_usuario = ({ navigation }) => {
                 <X color={theme.colors.textSecondary} size={24} />
               </TouchableOpacity>
             </View>
-            
+
             <ScrollView showsVerticalScrollIndicator={false} style={styles.modalScroll}>
               <View style={styles.termSection}>
                 <Text style={styles.termLabel}>Uso de Datos</Text>
@@ -276,7 +276,7 @@ export const Registrar_usuario = ({ navigation }) => {
               </View>
             </ScrollView>
 
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.closeButton}
               onPress={() => setShowTerms(false)}
             >

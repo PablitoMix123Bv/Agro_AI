@@ -36,36 +36,36 @@ export const Login_Screen = ({ navigation }) => {
   //login function
 
   const handleLogin = async () => {
-  // 1. Verificación básica de campos vacíos
-  if (!email || !password) {
-    alert("Por favor ingresa correo y contraseña");
-    return;
-  }
-
-  try {
-    const response = await fetch('http://172.20.10.7:5000/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-
-    const data = await response.json();
-
-    // 2. ¡ESTA ES LA CLAVE! 
-    // Solo si el servidor responde con un status 200 (ok)
-    if (response.ok) {
-      console.log("Login exitoso", data);
-      navigation.replace('MainTabs'); // <--- Solo entra aquí si los datos son correctos
-    } else {
-      // 3. Si el usuario no existe o la contraseña está mal, mostramos el error del back
-      alert(data.msg || "Error en el inicio de sesión");
+    // 1. Verificación básica de campos vacíos
+    if (!email || !password) {
+      alert("Por favor ingresa correo y contraseña");
+      return;
     }
 
-  } catch (error) {
-    console.error(error);
-    alert("Error de conexión. Revisa que el servidor esté corriendo.");
-  }
-};
+    try {
+      const response = await fetch('http://172.20.10.2:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+
+      // 2. ¡ESTA ES LA CLAVE! 
+      // Solo si el servidor responde con un status 200 (ok)
+      if (response.ok) {
+        console.log("Login exitoso", data);
+        navigation.replace('MainTabs'); // <--- Solo entra aquí si los datos son correctos
+      } else {
+        // 3. Si el usuario no existe o la contraseña está mal, mostramos el error del back
+        alert(data.msg || "Error en el inicio de sesión");
+      }
+
+    } catch (error) {
+      console.error(error);
+      alert("Error de conexión. Revisa que el servidor esté corriendo.");
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -181,8 +181,8 @@ export const Login_Screen = ({ navigation }) => {
             </View>
 
             {/* Terms Link for Login screen as requested */}
-            <TouchableOpacity 
-              style={{marginTop: 20}} 
+            <TouchableOpacity
+              style={{ marginTop: 20 }}
               onPress={() => setShowTerms(true)}
             >
               <Text style={styles.termsLinkText}>Términos y condiciones</Text>
@@ -206,8 +206,8 @@ export const Login_Screen = ({ navigation }) => {
         animationType="fade"
         onRequestClose={() => setShowTerms(false)}
       >
-        <Pressable 
-          style={styles.modalOverlay} 
+        <Pressable
+          style={styles.modalOverlay}
           onPress={() => setShowTerms(false)}
         >
           <View style={styles.modalContent}>
@@ -217,7 +217,7 @@ export const Login_Screen = ({ navigation }) => {
                 <X color={theme.colors.textSecondary} size={24} />
               </TouchableOpacity>
             </View>
-            
+
             <ScrollView showsVerticalScrollIndicator={false} style={styles.modalScroll}>
               <View style={styles.termSection}>
                 <Text style={styles.termLabel}>Uso de Datos</Text>
@@ -248,7 +248,7 @@ export const Login_Screen = ({ navigation }) => {
               </View>
             </ScrollView>
 
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.closeButton}
               onPress={() => setShowTerms(false)}
             >
@@ -264,7 +264,7 @@ export const Login_Screen = ({ navigation }) => {
 const getStyles = (theme, isDarkMode) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: theme.colors.background, 
+    backgroundColor: theme.colors.background,
   },
   keyboardView: {
     flex: 1,
@@ -408,7 +408,7 @@ const getStyles = (theme, isDarkMode) => StyleSheet.create({
     marginBottom: 16,
   },
   registerButton: {
-    backgroundColor: isDarkMode ? 'rgba(255, 173, 213, 0.1)' : '#FFEDD5', 
+    backgroundColor: isDarkMode ? 'rgba(255, 173, 213, 0.1)' : '#FFEDD5',
     borderRadius: 12,
     paddingVertical: 16,
     paddingHorizontal: 24,

@@ -19,6 +19,6 @@ app.get('/', (req, res) => {
 
 // Definir rutas
 app.use('/api/auth', require('./modules/auth/auth/auth'));
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(` Servidor corriendo en http://localhost:${PORT}`);
 });

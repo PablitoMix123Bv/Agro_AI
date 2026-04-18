@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Sun, Droplet, Plus, BrainCircuit, User, X, ChevronDown, Tractor, LayoutGrid, Leaf } from 'lucide-react-native';
+import { Sun, Droplet, Plus, BrainCircuit, User, X, ChevronDown, Tractor, LayoutGrid, Leaf, MapPin } from 'lucide-react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Svg, { Path } from 'react-native-svg';
 import { useTheme } from '../../theme/ThemeContext';
@@ -42,7 +42,7 @@ const SemiCircleGauge = ({ percentage, theme, isDarkMode }) => {
           />
           <Path
             d={`M ${strokeWidth},${radius + strokeWidth} A ${radius},${radius} 0 0 1 ${radius * 2 + strokeWidth},${radius + strokeWidth}`}
-            stroke="#059669"
+            stroke="#064E3B"
             strokeWidth={strokeWidth}
             fill="none"
             strokeLinecap="round"
@@ -102,49 +102,57 @@ export const Pagina_principal = () => {
       <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         
         {/* Standard Header */}
-        <Header />
+        <Header showUser={false} />
         
         {/* Simulación de Campo Card */}
         <View style={styles.mainCard}>
-          <ImageBackground 
-            source={require('../../../assets/farm_simulation.jpg')}
-            style={styles.cardImageBackground}
-            imageStyle={{ borderRadius: 32 }}
+          <LinearGradient
+            colors={['#064E3B', '#064E3B']}
+            style={styles.cardGradientOverlay}
           >
-            <LinearGradient
-              colors={['rgba(13, 27, 42, 0.2)', 'rgba(13, 27, 42, 0.7)']}
-              style={styles.cardGradientOverlay}
-            >
-              <View style={styles.liveBadge}>
-                <Text style={styles.liveBadgeText}>EN VIVO</Text>
-              </View>
-              
-              <Text style={styles.simTitle}>Simulación de Campo</Text>
+            <View style={styles.liveBadge}>
+              <Text style={styles.liveBadgeText}>EN VIVO</Text>
+            </View>
+            
+            <Text style={styles.simTitle}>Simulación de Campo</Text>
 
-              <View style={styles.statsPillsRow}>
-                <View style={styles.statPill}>
-                  <View style={styles.pillIconContainer}>
-                    <Sun color={theme.colors.primary} size={14} />
-                  </View>
-                  <View>
-                    <Text style={styles.pillLabel}>SOLAR</Text>
-                    <Text style={styles.pillValue}>{solarValue}</Text>
-                  </View>
+            <View style={styles.statsPillsRow}>
+              <View style={styles.statPill}>
+                <View style={styles.pillIconContainer}>
+                  <Sun color={theme.colors.primary} size={14} />
                 </View>
-
-                <View style={styles.statPill}>
-                  <View style={styles.pillIconContainer}>
-                    <Droplet color="#3B82F6" size={14} />
-                  </View>
-                  <View>
-                    <Text style={styles.pillLabel}>HUMEDAD</Text>
-                    <Text style={styles.pillValue}>{humidityValue}</Text>
-                  </View>
+                <View>
+                  <Text style={styles.pillLabel}>SOLAR</Text>
+                  <Text style={styles.pillValue}>{solarValue}</Text>
                 </View>
               </View>
-            </LinearGradient>
-          </ImageBackground>
+
+              <View style={styles.statPill}>
+                <View style={styles.pillIconContainer}>
+                  <Droplet color="#3B82F6" size={14} />
+                </View>
+                <View>
+                  <Text style={styles.pillLabel}>HUMEDAD</Text>
+                  <Text style={styles.pillValue}>{humidityValue}</Text>
+                </View>
+              </View>
+            </View>
+          </LinearGradient>
         </View>
+
+        {/* Map Placeholder for Backend Integration */}
+        <Card style={styles.mapPlaceholderCard}>
+          <View style={styles.mapPlaceholderHeader}>
+            <View style={styles.mapIconWrapper}>
+              <MapPin color={theme.colors.primary} size={18} />
+            </View>
+            <Text style={styles.mapPlaceholderTitle}>UBICACIÓN GEOGRÁFICA</Text>
+          </View>
+          <View style={styles.mapContainer}>
+            <Text style={styles.mapText}>Área reservada para Google Maps API</Text>
+            <Text style={styles.mapSubtext}>Listo para conexión con el backend</Text>
+          </View>
+        </Card>
 
         {/* Salud del Ecosistema */}
         <Card style={styles.infoCard}>
@@ -373,19 +381,16 @@ const getStyles = (theme, isDarkMode) => StyleSheet.create({
     borderRadius: 32,
     overflow: 'hidden',
     marginBottom: 24,
-    height: 240,
     ...theme.shadows.soft,
   },
   cardImageBackground: {
     flex: 1,
   },
   cardGradientOverlay: {
-    flex: 1,
     padding: 24,
-    justifyContent: 'space-between',
   },
   liveBadge: {
-    backgroundColor: '#065F46',
+    backgroundColor: '#064E3B',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 20,
@@ -400,7 +405,8 @@ const getStyles = (theme, isDarkMode) => StyleSheet.create({
     color: '#FFF',
     fontSize: 28,
     fontWeight: '800',
-    marginTop: 8,
+    marginTop: 16,
+    marginBottom: 16,
   },
   statsPillsRow: {
     flexDirection: 'row',
@@ -433,6 +439,49 @@ const getStyles = (theme, isDarkMode) => StyleSheet.create({
     fontWeight: '800',
     color: '#111827',
   },
+  mapPlaceholderCard: {
+    padding: 24,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    borderStyle: 'dashed',
+  },
+  mapPlaceholderHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 16,
+  },
+  mapIconWrapper: {
+    padding: 6,
+    backgroundColor: isDarkMode ? 'rgba(16, 185, 129, 0.1)' : '#ECFDF5',
+    borderRadius: 8,
+  },
+  mapPlaceholderTitle: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: theme.colors.textSecondary,
+    letterSpacing: 1,
+  },
+  mapContainer: {
+    height: 180,
+    backgroundColor: isDarkMode ? '#1E293B' : '#F9FAFB',
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  mapText: {
+    color: theme.colors.text,
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 4,
+  },
+  mapSubtext: {
+    color: theme.colors.textSecondary,
+    fontSize: 12,
+  },
   infoCard: {
     padding: 24,
     marginBottom: 24,
@@ -453,7 +502,7 @@ const getStyles = (theme, isDarkMode) => StyleSheet.create({
   efficiencyValue: {
     fontSize: 48,
     fontWeight: '900',
-    color: '#065F46',
+    color: '#064E3B',
   },
   efficiencyLabel: {
     fontSize: 14,
@@ -474,7 +523,7 @@ const getStyles = (theme, isDarkMode) => StyleSheet.create({
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: '#065F46',
+    backgroundColor: '#064E3B',
   },
   aiCard: {
     backgroundColor: '#064E3B',
@@ -551,7 +600,7 @@ const getStyles = (theme, isDarkMode) => StyleSheet.create({
     borderRadius: 6,
   },
   statusBadgeText: {
-    color: '#065F46',
+    color: '#064E3B',
     fontSize: 10,
     fontWeight: '800',
   },
@@ -584,7 +633,7 @@ const getStyles = (theme, isDarkMode) => StyleSheet.create({
     fontWeight: '800',
   },
   floatingButton: {
-    backgroundColor: '#065F46',
+    backgroundColor: '#064E3B',
     width: 64,
     height: 64,
     borderRadius: 32,

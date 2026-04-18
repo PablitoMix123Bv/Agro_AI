@@ -48,18 +48,18 @@ const MainTabs = () => {
     >
       <Tab.Screen 
         name="Inicio" 
-        component={Pagina_principal} 
+        component={FieldsScreen} 
         options={{
           tabBarLabel: 'INICIO',
-          tabBarIcon: ({ color }) => <LayoutGrid color={color} size={22} />
+          tabBarIcon: ({ color }) => <Sprout color={color} size={26} />
         }}
       />
       <Tab.Screen 
-        name="Campos" 
-        component={FieldsScreen} 
+        name="Mapa" 
+        component={Pagina_principal} 
         options={{
-          tabBarLabel: 'CAMPOS',
-          tabBarIcon: ({ color }) => <Sprout color={color} size={26} />
+          tabBarLabel: 'MAPA',
+          tabBarIcon: ({ color }) => <LayoutGrid color={color} size={22} />
         }}
       />
       <Tab.Screen 

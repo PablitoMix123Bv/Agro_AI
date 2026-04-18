@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, StatusBar, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
@@ -68,7 +68,7 @@ export const FieldsScreen = () => {
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         
         {/* Standard Header */}
-        <Header />
+        <Header showUser={false} />
 
         {/* Map Container */}
         <View style={styles.mapContainer}>
@@ -221,17 +221,38 @@ export const FieldsScreen = () => {
             </View>
           </View>
 
-          <Button 
-            title="Guardar Configuración" 
-            variant={hasChanges ? "primary" : "outline"} 
-            style={[
-              styles.secondaryButton, 
-              hasChanges && { backgroundColor: '#064E3B', borderColor: '#064E3B' }
-            ]}
-            textStyle={hasChanges && { color: '#FFF' }}
-            onPress={handleSave}
-            disabled={!hasChanges}
-          />
+          <View style={styles.settingsActionRow}>
+            <Button 
+              title="Actualizar" 
+              variant="primary"
+              style={[styles.actionButton, styles.updateButton]}
+              textStyle={styles.actionButtonText}
+              onPress={handleSave}
+            />
+            <Button 
+              title="Eliminar" 
+              variant="primary"
+              style={[styles.actionButton, styles.deleteButton]}
+              textStyle={styles.actionButtonText}
+              onPress={() => {
+                Alert.alert(
+                  "Confirmar eliminación",
+                  `¿Estás seguro que quieres eliminar la ${selectedParcel.name}?`,
+                  [
+                    { text: "Cancelar", style: "cancel" },
+                    { 
+                      text: "Eliminar", 
+                      style: "destructive", 
+                      onPress: () => {
+                        console.log(`Parcela ${selectedParcel.name} eliminada`);
+                        // Aquí iría la lógica de eliminación real
+                      } 
+                    }
+                  ]
+                );
+              }}
+            />
+          </View>
         </Card>
 
         <View style={{height: 20}} />
@@ -414,7 +435,7 @@ const getStyles = (theme, isDarkMode) => StyleSheet.create({
     borderRadius: 4,
   },
   badgeSuccessText: {
-    color: isDarkMode ? '#81C784' : '#166534',
+    color: isDarkMode ? '#064E3B' : '#064E3B',
     fontSize: 10,
     fontWeight: 'bold',
   },
@@ -524,5 +545,27 @@ const getStyles = (theme, isDarkMode) => StyleSheet.create({
   secondaryButton: {
     backgroundColor: isDarkMode ? 'rgba(46, 125, 50, 0.1)' : '#E5F6EE',
     borderColor: 'transparent',
+  },
+  settingsActionRow: {
+    flexDirection: 'row',
+    gap: theme.spacing.md,
+    marginTop: theme.spacing.sm,
+  },
+  actionButton: {
+    flex: 1,
+    paddingVertical: 14,
+  },
+  updateButton: {
+    backgroundColor: '#064E3B',
+    borderColor: '#064E3B',
+  },
+  deleteButton: {
+    backgroundColor: '#EF4444',
+    borderColor: '#EF4444',
+  },
+  actionButtonText: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: '700',
   }
 });
