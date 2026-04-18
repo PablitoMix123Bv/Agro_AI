@@ -7,6 +7,8 @@ import { Droplets, Clock, Leaf, ChevronDown, ChevronUp } from 'lucide-react-nati
 import { Svg, Path } from 'react-native-svg';
 import { useTheme } from '../../theme/ThemeContext';
 
+import { Header } from '../../components/Header';
+
 export const StatsScreen = () => {
   const { isDarkMode, theme } = useTheme();
   const [showFullHistory, setShowFullHistory] = useState(false);
@@ -19,19 +21,8 @@ export const StatsScreen = () => {
       <StatusBar style={isDarkMode || isPerformanceMode ? 'light' : 'dark'} />
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
 
-        {/* Header */}
-        <TouchableOpacity 
-          style={styles.header} 
-          onPress={() => setIsPerformanceMode(!isPerformanceMode)}
-          activeOpacity={0.7}
-        >
-          <View style={styles.brandInfo}>
-            <View style={styles.avatar}>
-              <UserPlaceholder isDarkMode={isDarkMode} theme={theme} />
-            </View>
-            <Text style={styles.brandName}>AgroSmart AI</Text>
-          </View>
-        </TouchableOpacity>
+        {/* Standard Header */}
+        <Header />
 
         {/* Titles Section */}
         <View style={styles.titleSection}>

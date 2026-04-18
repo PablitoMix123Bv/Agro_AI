@@ -16,6 +16,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Eye, EyeOff, Square, CheckSquare, ArrowRight, Leaf, X } from 'lucide-react-native';
 import { useTheme } from '../../theme/ThemeContext';
 
+import { Header } from '../../components/Header';
+
 export const Login_Screen = ({ navigation }) => {
   const { theme, isDarkMode } = useTheme();
   const [email, setEmail] = useState('');
@@ -40,12 +42,11 @@ export const Login_Screen = ({ navigation }) => {
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
 
           <View style={styles.content}>
+            {/* Standard Header */}
+            <Header showUser={false} />
+
             {/* Logo y Título */}
             <View style={styles.header}>
-              <View style={styles.logoRow}>
-                <Leaf color={theme.colors.primary} size={24} />
-                <Text style={styles.logoText}>Agro IA</Text>
-              </View>
               <Text style={styles.title}>Bienvenido</Text>
               <Text style={styles.subtitle}>
                 Inicia sesión para continuar

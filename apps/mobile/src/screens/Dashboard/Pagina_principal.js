@@ -18,6 +18,7 @@ import { Sun, Droplet, Plus, BrainCircuit, User, X, ChevronDown, Tractor, Layout
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Svg, { Path } from 'react-native-svg';
 import { useTheme } from '../../theme/ThemeContext';
+import { Header } from '../../components/Header';
 import { Card } from '../../components/Card';
 
 // Custom Semi-Circle Gauge Component
@@ -99,6 +100,9 @@ export const Pagina_principal = () => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style={isDarkMode ? 'light' : 'dark'} />
       <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+        
+        {/* Standard Header */}
+        <Header />
         
         {/* Simulación de Campo Card */}
         <View style={styles.mainCard}>

@@ -16,6 +16,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { User, AtSign, Lock, Key, Square, CheckSquare, ArrowRight, Leaf, X } from 'lucide-react-native';
 import { useTheme } from '../../theme/ThemeContext';
 
+import { Header } from '../../components/Header';
+
 export const Registrar_usuario = ({ navigation }) => {
   const { theme, isDarkMode } = useTheme();
   const [name, setName] = useState('');
@@ -36,6 +38,9 @@ export const Registrar_usuario = ({ navigation }) => {
       >
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
           
+          {/* Standard Header */}
+          <Header showUser={false} />
+
           <View style={styles.card}>
             
             {/* Header */}
@@ -45,9 +50,6 @@ export const Registrar_usuario = ({ navigation }) => {
                 <Text style={styles.subtitle}>
                   Comienza tu viaje hacia una{'\n'}agricultura más inteligente.
                 </Text>
-              </View>
-              <View style={styles.iconCircle}>
-                <Leaf color={theme.colors.primary} size={24} />
               </View>
             </View>
 

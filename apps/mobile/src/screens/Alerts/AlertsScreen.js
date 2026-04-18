@@ -6,6 +6,8 @@ import { Button } from '../../components/Button';
 import { AlertTriangle, BrainCircuit, CheckCircle2, Droplets, Thermometer, FlaskConical, CloudRain, Sprout } from 'lucide-react-native';
 import { useTheme } from '../../theme/ThemeContext';
 
+import { Header } from '../../components/Header';
+
 export const AlertsScreen = () => {
   const { theme, isDarkMode } = useTheme();
   const styles = getStyles(theme, isDarkMode);
@@ -15,13 +17,8 @@ export const AlertsScreen = () => {
       <StatusBar style={isDarkMode ? 'light' : 'dark'} />
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         
-        {/* Header */}
-        <View style={styles.header}>
-          <View style={styles.brandInfo}>
-            <Sprout color={theme.colors.primary} size={20} />
-            <Text style={styles.brandName}>Agro AI</Text>
-          </View>
-        </View>
+        {/* Standard Header */}
+        <Header showUser={false} />
 
         <View style={styles.titleContainer}>
           <Text style={styles.preTitle}>MONITORIZACIÓN EN TIEMPO REAL</Text>

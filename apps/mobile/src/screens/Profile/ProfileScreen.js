@@ -17,6 +17,7 @@ import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
 import { MapPin, Edit3, BellRing, Moon, Sprout, User, Mail, X, LogOut } from 'lucide-react-native';
 import { useTheme } from '../../theme/ThemeContext';
+import { Header } from '../../components/Header';
 
 export const ProfileScreen = ({ navigation }) => {
   const { isDarkMode, toggleTheme, theme } = useTheme();
@@ -44,6 +45,9 @@ export const ProfileScreen = ({ navigation }) => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style={isDarkMode ? 'light' : 'dark'} />
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+        
+        {/* Standard Header */}
+        <Header showUser={false} />
         
         {/* Profile Header */}
         <View style={styles.profileHeader}>

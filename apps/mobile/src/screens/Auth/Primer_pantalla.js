@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Platform, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, Platform, StatusBar, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Leaf } from 'lucide-react-native';
 import { useTheme } from '../../theme/ThemeContext';
 
 export const Primer_pantalla = ({ navigation }) => {
@@ -23,13 +22,15 @@ export const Primer_pantalla = ({ navigation }) => {
         
         {/* Logo Container */}
         <View style={styles.logoContainer}>
-          <View style={[styles.logoPlaceholder, { backgroundColor: theme.colors.primary }]}>
-            <Leaf color="#FFFFFF" size={60} />
-          </View>
+          <Image 
+            source={require('../../../assets/logo.jpg')}
+            style={styles.logoSplash}
+            resizeMode="contain"
+          />
         </View>
 
         {/* App Name */}
-        <Text style={[styles.appName, { color: theme.colors.primary }]}>Agro AI</Text>
+        <Text style={[styles.appName, { color: theme.colors.primary }]}>AgroIA</Text>
 
         {/* Slogan */}
         <Text style={[styles.slogan, { color: theme.colors.textSecondary }]}>
@@ -73,12 +74,10 @@ const styles = StyleSheet.create({
       }
     }),
   },
-  logoPlaceholder: {
+  logoSplash: {
     width: 120,
     height: 120,
     borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   appName: {
     fontSize: 32,

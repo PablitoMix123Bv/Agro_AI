@@ -17,6 +17,8 @@ const PARCELS_DATA = [
   { id: 'C2', name: 'Parcela C2', percentage: 94, crop: 'Trigo', location: 'Sector Este, Lote 2', area: '9.8 ha', waterNeed: '0.3 L/m²', temp: '20°C', wind: '7km/h' },
 ];
 
+import { Header } from '../../components/Header';
+
 export const FieldsScreen = () => {
   const { isDarkMode, theme } = useTheme();
   const [isIrrigating, setIsIrrigating] = useState(false);
@@ -65,15 +67,8 @@ export const FieldsScreen = () => {
       <StatusBar style={isDarkMode ? 'light' : 'dark'} />
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         
-        {/* Header */}
-        <View style={styles.header}>
-          <View style={styles.userInfo}>
-            <View style={styles.avatar}>
-              <UserPlaceholder theme={theme} />
-            </View>
-            <Text style={styles.userName}>Agro AI</Text>
-          </View>
-        </View>
+        {/* Standard Header */}
+        <Header />
 
         {/* Map Container */}
         <View style={styles.mapContainer}>
