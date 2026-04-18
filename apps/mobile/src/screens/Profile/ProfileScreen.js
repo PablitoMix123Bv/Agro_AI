@@ -27,7 +27,7 @@ export const ProfileScreen = ({ navigation }) => {
   const [userData, setUserData] = useState({
     name: 'Juan Pérez',
     email: 'juan.perez@agroia.com',
-    location: 'Sinaloa, México',
+    location: 'Querétaro, México',
     joinDate: 'Miembro desde Enero 2024'
   });
 

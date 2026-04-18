@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
   TouchableOpacity,
   Modal,
   TextInput,
@@ -12,6 +12,7 @@ import {
   StatusBar,
   ImageBackground
 } from 'react-native';
+import { WebView } from 'react-native-webview';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Sun, Droplet, Plus, BrainCircuit, User, X, ChevronDown, Tractor, LayoutGrid, Leaf, MapPin } from 'lucide-react-native';
@@ -24,7 +25,7 @@ import { Card } from '../../components/Card';
 // Custom Semi-Circle Gauge Component
 const SemiCircleGauge = ({ percentage, theme, isDarkMode }) => {
   const radius = 60;
-  const strokeWidth = 14; 
+  const strokeWidth = 14;
   const circumference = radius * Math.PI;
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
@@ -64,13 +65,13 @@ export const Pagina_principal = () => {
   const [solarValue] = useState('840W/m²');
   const [humidityValue] = useState('42%');
   const [modalVisible, setModalVisible] = useState(false);
-  
+
   const [region, setRegion] = useState('Seleccionar región');
   const [area, setArea] = useState('');
   const [cropType, setCropType] = useState('Seleccionar cultivo');
   const [cultivationDate, setCultivationDate] = useState(new Date());
   const [harvestDate, setHarvestDate] = useState(new Date());
-  
+
   const [showCultivationPicker, setShowCultivationPicker] = useState(false);
   const [showHarvestPicker, setShowHarvestPicker] = useState(false);
   const [showCropMenu, setShowCropMenu] = useState(false);
@@ -100,10 +101,10 @@ export const Pagina_principal = () => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style={isDarkMode ? 'light' : 'dark'} />
       <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-        
+
         {/* Standard Header */}
         <Header showUser={false} />
-        
+
         {/* Simulación de Campo Card */}
         <View style={styles.mainCard}>
           <LinearGradient
@@ -113,7 +114,7 @@ export const Pagina_principal = () => {
             <View style={styles.liveBadge}>
               <Text style={styles.liveBadgeText}>EN VIVO</Text>
             </View>
-            
+
             <Text style={styles.simTitle}>Simulación de Campo</Text>
 
             <View style={styles.statsPillsRow}>
@@ -140,17 +141,119 @@ export const Pagina_principal = () => {
           </LinearGradient>
         </View>
 
-        {/* Map Placeholder for Backend Integration */}
-        <Card style={styles.mapPlaceholderCard}>
+        {/* Azure Maps Integration */}
+        <Card style={[styles.mapPlaceholderCard, { padding: 16, borderStyle: 'solid' }]}>
           <View style={styles.mapPlaceholderHeader}>
             <View style={styles.mapIconWrapper}>
               <MapPin color={theme.colors.primary} size={18} />
             </View>
-            <Text style={styles.mapPlaceholderTitle}>UBICACIÓN GEOGRÁFICA</Text>
+            <Text style={styles.mapPlaceholderTitle}>UBICACIÓN GEOGRÁFICA (AZURE MAPS)</Text>
           </View>
-          <View style={styles.mapContainer}>
-            <Text style={styles.mapText}>Área reservada para Google Maps API</Text>
-            <Text style={styles.mapSubtext}>Listo para conexión con el backend</Text>
+          <View style={[styles.mapContainer, { height: 300, overflow: 'hidden', alignItems: 'stretch' }]}>
+            <WebView
+              originWhitelist={['*']}
+              source={{
+                html: `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="utf-8" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+                    <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.css" type="text/css" />
+                    <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.js"></script>
+                    <style>
+                        html, body {
+                            margin: 0;
+                            padding: 0;
+                            width: 100%;
+                            height: 100%;
+                            overflow: hidden;
+                        }
+                        #myMap {
+                            width: 100%;
+                            height: 100%;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div id="myMap"></div>
+                    <script>
+                        function crearMancha(centroLon, centroLat, radioBase, nivelDeRuido) {
+                            let puntos = [];
+                            let numeroDeVertices = 40;
+                            for (let i = 0; i < numeroDeVertices; i++) {
+                                let angulo = (i / numeroDeVertices) * Math.PI * 2;
+                                let variacion = 1 + (Math.random() * nivelDeRuido - nivelDeRuido / 2);
+                                let radioFinal = radioBase * variacion;
+                                let lon = centroLon + Math.cos(angulo) * radioFinal;
+                                let lat = centroLat + Math.sin(angulo) * radioFinal;
+                                puntos.push([lon, lat]);
+                            }
+                            puntos.push(puntos[0]);
+                            return puntos;
+                        }
+
+                        var map, datasource;
+                        function initMap() {
+                            map = new atlas.Map('myMap', {
+                                center: [-101.183, 20.402],
+                                zoom: 14,
+                                style: 'satellite_road_labels',
+                                view: 'Auto',
+                                authOptions: {
+                                    authType: 'subscriptionKey',
+                                    subscriptionKey: '${process.env.EXPO_PUBLIC_AZURE_MAPS_KEY}'
+                                }
+                            });
+
+                            map.events.add('ready', function () {
+                                datasource = new atlas.source.DataSource();
+                                map.sources.add(datasource);
+
+                                const centros = [
+                                    [-101.185, 20.401], [-101.181, 20.402], [-101.187, 20.404], [-101.179, 20.404],
+                                    [-101.184, 20.398], [-101.181, 20.397], [-101.186, 20.407], [-101.180, 20.408]
+                                ];
+                                const labels = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1', 'C2'];
+
+                                centros.forEach((centro, index) => {
+                                    let coordenadas = crearMancha(centro[0], centro[1], 0.0018, 0.4);
+                                    datasource.add(new atlas.data.Feature(new atlas.data.Polygon([coordenadas]), {
+                                        name: 'Zona ' + (index + 1),
+                                        parcelaId: labels[index]
+                                    }));
+                                });
+
+                                map.layers.add(new atlas.layer.PolygonLayer(datasource, null, {
+                                    fillColor: '#8D6E63',
+                                    fillOpacity: 0.6
+                                }));
+
+                                map.layers.add(new atlas.layer.LineLayer(datasource, null, {
+                                    strokeColor: '#5D4037',
+                                    strokeWidth: 2,
+                                    lineJoin: 'round'
+                                }));
+
+                                map.layers.add(new atlas.layer.SymbolLayer(datasource, null, {
+                                    textOptions: {
+                                        textField: ['get', 'parcelaId'],
+                                        color: '#FFFFFF',
+                                        size: 16,
+                                        haloColor: 'rgba(0,0,0,0.4)',
+                                        haloWidth: 1.5,
+                                        font: ['StandardFont-Bold']
+                                    }
+                                }));
+                            });
+                        }
+                        window.onload = initMap;
+                    </script>
+                </body>
+                </html>
+              ` }}
+              style={{ flex: 1, backgroundColor: 'transparent' }}
+            />
           </View>
         </Card>
 
@@ -182,14 +285,14 @@ export const Pagina_principal = () => {
           <Text style={styles.aiFooterText}>
             Mejor retención hídrica (+12%) basada en pérdida evaporativa y viento.
           </Text>
-          
+
           <View style={styles.aiDecoration}>
             <Svg width="100" height="100" viewBox="0 0 100 100">
-              <Path 
-                d="M 100 0 A 100 100 0 0 0 0 100" 
-                fill="none" 
-                stroke="rgba(255,255,255,0.1)" 
-                strokeWidth="20" 
+              <Path
+                d="M 100 0 A 100 100 0 0 0 0 100"
+                fill="none"
+                stroke="rgba(255,255,255,0.1)"
+                strokeWidth="20"
               />
             </Svg>
           </View>
@@ -223,7 +326,7 @@ export const Pagina_principal = () => {
         <View style={styles.plusTooltip}>
           <Text style={styles.tooltipText}>Nuevo Lote</Text>
         </View>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.floatingButton}
           onPress={() => setModalVisible(true)}
           activeOpacity={0.8}
@@ -240,13 +343,13 @@ export const Pagina_principal = () => {
         onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
-          <KeyboardAvoidingView 
+          <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.modalContainer}
           >
             <View style={styles.modalContent}>
               <View style={styles.modalHandle} />
-              
+
               <View style={styles.modalHeader}>
                 <View>
                   <Text style={styles.modalTitle}>Nuevo Lote</Text>
@@ -269,7 +372,7 @@ export const Pagina_principal = () => {
                 <View style={styles.inputGroup}>
                   <Text style={styles.inputLabel}>SUPERFICIE DEL LOTE</Text>
                   <View style={styles.textInputWrapper}>
-                    <TextInput 
+                    <TextInput
                       style={styles.textInput}
                       placeholder="Ej. 15.5"
                       placeholderTextColor={theme.colors.textSecondary}
@@ -283,7 +386,7 @@ export const Pagina_principal = () => {
 
                 <View style={styles.inputGroup}>
                   <Text style={styles.inputLabel}>TIPO DE CULTIVO</Text>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={styles.selectInput}
                     onPress={() => setShowCropMenu(!showCropMenu)}
                   >
@@ -293,8 +396,8 @@ export const Pagina_principal = () => {
                   {showCropMenu && (
                     <View style={styles.menuContainer}>
                       {crops.map(crop => (
-                        <TouchableOpacity 
-                          key={crop} 
+                        <TouchableOpacity
+                          key={crop}
                           style={styles.menuItem}
                           onPress={() => {
                             setCropType(crop);
@@ -311,7 +414,7 @@ export const Pagina_principal = () => {
                 <View style={styles.datesRow}>
                   <View style={[styles.inputGroup, { flex: 1 }]}>
                     <Text style={styles.inputLabel}>FECHA DE SIEMBRA</Text>
-                    <TouchableOpacity 
+                    <TouchableOpacity
                       style={styles.dateInput}
                       onPress={() => setShowCultivationPicker(true)}
                     >
@@ -320,7 +423,7 @@ export const Pagina_principal = () => {
                   </View>
                   <View style={[styles.inputGroup, { flex: 1 }]}>
                     <Text style={styles.inputLabel}>EST. COSECHA</Text>
-                    <TouchableOpacity 
+                    <TouchableOpacity
                       style={styles.dateInput}
                       onPress={() => setShowHarvestPicker(true)}
                     >
@@ -347,14 +450,14 @@ export const Pagina_principal = () => {
                   />
                 )}
 
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.submitButton}
                   onPress={() => setModalVisible(false)}
                 >
                   <Text style={styles.submitButtonText}>Registrar Lote</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.cancelButton}
                   onPress={() => setModalVisible(false)}
                 >
