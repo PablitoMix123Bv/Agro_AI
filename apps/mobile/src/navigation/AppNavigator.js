@@ -1,46 +1,48 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
-import { LayoutGrid, Sprout, BarChart3, Bell, User } from 'lucide-react-native';
-import { View, Text } from 'react-native';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { LayoutGrid, Sprout, FileText, Bell, User } from 'lucide-react-native';
+
+import { Pagina_principal } from '../screens/Dashboard/Pagina_principal';
+import { FieldsScreen } from '../screens/Fields/FieldsScreen';
 import { Primer_pantalla } from '../screens/Auth/Primer_pantalla';
 import { Login_Screen } from '../screens/Auth/Login_Screen';
 import { Registrar_usuario } from '../screens/Auth/Registrar_usuario';
-import { Pagina_principal } from '../screens/Dashboard/Pagina_principal';
-import { IrrigationScreen } from '../screens/Fields/IrrigationScreen';
 import { StatsScreen } from '../screens/Dashboard/StatsScreen';
-import { theme } from '../theme/theme';
+import { AlertsScreen } from '../screens/Alerts/AlertsScreen';
+import { ProfileScreen } from '../screens/Profile/ProfileScreen';
+import { useTheme } from '../theme/ThemeContext';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const PlaceholderScreen = ({ title }) => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F8F9FA' }}>
-    <Text style={{ color: '#166534', fontSize: 18, fontWeight: 'bold' }}>{title}</Text>
-  </View>
-);
-
 const MainTabs = () => {
+  const { theme, isDarkMode } = useTheme();
+
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: '#FFFFFF',
-          borderTopColor: '#E5E7EB',
+          backgroundColor: theme.colors.surface,
+          borderTopColor: theme.colors.border,
           borderTopWidth: 1,
-          paddingBottom: 8,
+          paddingBottom: 16,
           paddingTop: 8,
-          height: 70,
+          height: 80,
+          elevation: 10,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 10,
         },
-        tabBarActiveTintColor: '#166534',
-        tabBarInactiveTintColor: '#9CA3AF',
+        tabBarActiveTintColor: theme.colors.primary,
+        tabBarInactiveTintColor: theme.colors.textSecondary,
         tabBarLabelStyle: {
           fontSize: 10,
           fontWeight: '700',
           marginTop: 4,
-          letterSpacing: 0.5,
         }
       }}
     >
@@ -49,52 +51,62 @@ const MainTabs = () => {
         component={Pagina_principal} 
         options={{
           tabBarLabel: 'INICIO',
-          tabBarIcon: ({ color, size }) => <LayoutGrid color={color} size={24} />
+          tabBarIcon: ({ color }) => <LayoutGrid color={color} size={22} />
         }}
       />
       <Tab.Screen 
         name="Campos" 
+        component={FieldsScreen} 
         options={{
           tabBarLabel: 'CAMPOS',
-          tabBarIcon: ({ color, size }) => <Sprout color={color} size={24} />
+          tabBarIcon: ({ color }) => <Sprout color={color} size={26} />
         }}
-      >
-        {() => <PlaceholderScreen title="Campos" />}
-      </Tab.Screen>
+      />
       <Tab.Screen 
         name="Datos" 
+        component={StatsScreen} 
         options={{
           tabBarLabel: 'DATOS',
-          tabBarIcon: ({ color, size }) => <BarChart3 color={color} size={24} />
+          tabBarIcon: ({ color }) => <FileText color={color} size={22} />
         }}
-      >
-        {() => <PlaceholderScreen title="Datos" />}
-      </Tab.Screen>
+      />
       <Tab.Screen 
         name="Alertas" 
+        component={AlertsScreen} 
         options={{
           tabBarLabel: 'ALERTAS',
-          tabBarIcon: ({ color, size }) => <Bell color={color} size={24} />
+          tabBarIcon: ({ color }) => <Bell color={color} size={22} />
         }}
-      >
-        {() => <PlaceholderScreen title="Alertas" />}
-      </Tab.Screen>
+      />
       <Tab.Screen 
         name="Perfil" 
+        component={ProfileScreen} 
         options={{
           tabBarLabel: 'PERFIL',
-          tabBarIcon: ({ color, size }) => <User color={color} size={24} />
+          tabBarIcon: ({ color }) => <User color={color} size={22} />
         }}
-      >
-        {() => <PlaceholderScreen title="Perfil" />}
-      </Tab.Screen>
+      />
     </Tab.Navigator>
   );
 };
 
 export const AppNavigator = () => {
+  const { isDarkMode, theme } = useTheme();
+
+  const customNavigationTheme = {
+    ...(isDarkMode ? DarkTheme : DefaultTheme),
+    colors: {
+      ...(isDarkMode ? DarkTheme.colors : DefaultTheme.colors),
+      background: theme.colors.background,
+      card: theme.colors.surface,
+      text: theme.colors.text,
+      border: theme.colors.border,
+      primary: theme.colors.primary,
+    },
+  };
+
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={customNavigationTheme}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Splash" component={Primer_pantalla} />
         <Stack.Screen name="Login" component={Login_Screen} />

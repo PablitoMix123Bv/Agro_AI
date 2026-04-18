@@ -1,8 +1,12 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Image, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, Platform, StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Leaf } from 'lucide-react-native';
+import { useTheme } from '../../theme/ThemeContext';
 
 export const Primer_pantalla = ({ navigation }) => {
+  const { theme, isDarkMode } = useTheme();
+
   useEffect(() => {
     // Navigate to Login after 3 seconds
     const timer = setTimeout(() => {
@@ -13,27 +17,27 @@ export const Primer_pantalla = ({ navigation }) => {
   }, [navigation]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <StatusBar style={isDarkMode ? 'light' : 'dark'} />
       <View style={styles.content}>
         
-        {/* Logo Placeholder (Replace with your actual image later) */}
+        {/* Logo Container */}
         <View style={styles.logoContainer}>
-          {/* <Image source={require('../../../assets/logo.png')} style={styles.logoImage} /> */}
-          <View style={styles.logoPlaceholder}>
+          <View style={[styles.logoPlaceholder, { backgroundColor: theme.colors.primary }]}>
             <Leaf color="#FFFFFF" size={60} />
           </View>
         </View>
 
         {/* App Name */}
-        <Text style={styles.appName}>Agro AI</Text>
+        <Text style={[styles.appName, { color: theme.colors.primary }]}>Agro AI</Text>
 
         {/* Slogan */}
-        <Text style={styles.slogan}>
+        <Text style={[styles.slogan, { color: theme.colors.textSecondary }]}>
           Tecnología que hace{'\n'}crecer tu campo.
         </Text>
 
         {/* Welcome Text */}
-        <Text style={styles.welcome}>Bienvenido</Text>
+        <Text style={[styles.welcome, { color: theme.colors.text }]}>Bienvenido</Text>
 
       </View>
     </SafeAreaView>
@@ -43,7 +47,6 @@ export const Primer_pantalla = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA', // Light background matching your design
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -73,27 +76,18 @@ const styles = StyleSheet.create({
   logoPlaceholder: {
     width: 120,
     height: 120,
-    backgroundColor: '#166534', // Dark green matching the logo background
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  logoImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 30,
-    resizeMode: 'contain',
-  },
   appName: {
     fontSize: 32,
     fontWeight: '800',
-    color: '#166534', // Dark green text
     marginBottom: 20,
     letterSpacing: 0.5,
   },
   slogan: {
     fontSize: 18,
-    color: '#334155', // Dark slate gray
     textAlign: 'center',
     fontWeight: '400',
     marginBottom: 40,
@@ -102,8 +96,5 @@ const styles = StyleSheet.create({
   welcome: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#000000',
   }
 });
-
-import { Platform } from 'react-native';

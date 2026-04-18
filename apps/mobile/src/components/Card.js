@@ -1,10 +1,28 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { theme } from '../theme/theme';
+import { useTheme } from '../theme/ThemeContext';
 
 export const Card = ({ children, style, variant = 'default' }) => {
+  const { theme } = useTheme();
+  
+  const cardStyles = [
+    styles.card,
+    {
+      backgroundColor: theme.colors.surface,
+      borderRadius: theme.borderRadius.lg,
+      padding: theme.spacing.lg,
+      borderColor: theme.colors.border,
+      ...theme.shadows.soft,
+    },
+    variant === 'glow' && {
+      borderColor: theme.colors.primary,
+      ...theme.shadows.glow,
+    },
+    style
+  ];
+
   return (
-    <View style={[styles.card, variant === 'glow' && styles.glow, style]}>
+    <View style={cardStyles}>
       {children}
     </View>
   );
@@ -12,15 +30,6 @@ export const Card = ({ children, style, variant = 'default' }) => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.borderRadius.lg,
-    padding: theme.spacing.lg,
-    ...theme.shadows.soft,
     borderWidth: 1,
-    borderColor: theme.colors.border,
-  },
-  glow: {
-    borderColor: theme.colors.primary,
-    ...theme.shadows.glow,
   }
 });

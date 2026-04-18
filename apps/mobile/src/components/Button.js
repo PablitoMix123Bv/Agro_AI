@@ -1,7 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { theme } from '../theme/theme';
+import { useTheme } from '../theme/ThemeContext';
 
 export const Button = ({ 
   title, 
@@ -9,48 +8,57 @@ export const Button = ({
   variant = 'primary', 
   loading = false, 
   icon,
-  style 
+  style,
+  textStyle,
+  disabled = false
 }) => {
-  if (variant === 'primary') {
-    return (
-      <TouchableOpacity 
-        onPress={onPress} 
-        activeOpacity={0.8}
-        disabled={loading}
-        style={[styles.container, style]}
-      >
-        <LinearGradient
-          colors={theme.colors.primaryGradient}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.gradient}
-        >
-          {loading ? (
-            <ActivityIndicator color={theme.colors.text} />
-          ) : (
-            <>
-              {icon && icon}
-              <Text style={styles.text}>{title}</Text>
-            </>
-          )}
-        </LinearGradient>
-      </TouchableOpacity>
-    );
-  }
+  const { theme } = useTheme();
+
+  const isPrimary = variant === 'primary';
+  const isDisabled = loading || disabled;
+
+  const containerStyles = [
+    styles.container,
+    {
+      paddingVertical: theme.spacing.md,
+      paddingHorizontal: theme.spacing.xl,
+      borderRadius: theme.borderRadius.md,
+      gap: theme.spacing.sm,
+    },
+    isPrimary ? {
+      backgroundColor: theme.colors.primary,
+      ...theme.shadows.soft,
+    } : {
+      backgroundColor: 'transparent',
+      borderWidth: 1,
+      borderColor: theme.colors.primary,
+    },
+    isDisabled && { opacity: 0.5 },
+    style
+  ];
+
+  const contentTextStyle = [
+    isPrimary ? styles.primaryText : { color: theme.colors.primary },
+    {
+      fontSize: theme.typography.sizes.md,
+      fontWeight: '600',
+    },
+    textStyle
+  ];
 
   return (
     <TouchableOpacity 
       onPress={onPress} 
-      activeOpacity={0.7}
-      disabled={loading}
-      style={[styles.outlineContainer, style]}
+      activeOpacity={0.8}
+      disabled={isDisabled}
+      style={containerStyles}
     >
       {loading ? (
-        <ActivityIndicator color={theme.colors.primary} />
+        <ActivityIndicator color={isPrimary ? "#FFFFFF" : theme.colors.primary} />
       ) : (
         <>
           {icon && icon}
-          <Text style={styles.outlineText}>{title}</Text>
+          <Text style={contentTextStyle}>{title}</Text>
         </>
       )}
     </TouchableOpacity>
@@ -59,40 +67,12 @@ export const Button = ({
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: theme.borderRadius.md,
-    overflow: 'hidden',
-    ...theme.shadows.soft,
-  },
-  gradient: {
-    paddingVertical: theme.spacing.md,
-    paddingHorizontal: theme.spacing.xl,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
-    gap: theme.spacing.sm,
   },
-  text: {
-    color: theme.colors.text,
-    fontSize: theme.typography.sizes.md,
-    fontWeight: '600',
-    letterSpacing: 0.5,
-  },
-  outlineContainer: {
-    paddingVertical: theme.spacing.md,
-    paddingHorizontal: theme.spacing.xl,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    gap: theme.spacing.sm,
-    borderWidth: 1,
-    borderColor: theme.colors.primary,
-    borderRadius: theme.borderRadius.md,
-    backgroundColor: 'transparent',
-  },
-  outlineText: {
-    color: theme.colors.primary,
-    fontSize: theme.typography.sizes.md,
-    fontWeight: '600',
+  primaryText: {
+    color: '#FFFFFF',
     letterSpacing: 0.5,
   }
 });

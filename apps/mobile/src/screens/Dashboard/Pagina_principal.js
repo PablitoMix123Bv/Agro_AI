@@ -3,57 +3,45 @@ import {
   View, 
   Text, 
   StyleSheet, 
-  SafeAreaView, 
   ScrollView, 
   TouchableOpacity,
-  Image,
   Modal,
   TextInput,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
-  PanResponder,
-  Animated
+  StatusBar,
+  ImageBackground
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Bell, Sun, Droplet, Plus, BrainCircuit, User, X, ChevronDown, Tractor, Calendar } from 'lucide-react-native';
+import { Sun, Droplet, Plus, BrainCircuit, User, X, ChevronDown, Tractor, LayoutGrid, Leaf } from 'lucide-react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import Svg, { Path, Circle } from 'react-native-svg';
+import Svg, { Path } from 'react-native-svg';
+import { useTheme } from '../../theme/ThemeContext';
+import { Card } from '../../components/Card';
 
 // Custom Semi-Circle Gauge Component
-const SemiCircleGauge = ({ percentage }) => {
+const SemiCircleGauge = ({ percentage, theme, isDarkMode }) => {
   const radius = 60;
-  const strokeWidth = 14; // Slightly thicker for better visibility
-  const halfCircle = radius + strokeWidth;
+  const strokeWidth = 14; 
   const circumference = radius * Math.PI;
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
-
-  // Dynamic Color Logic
-  const getColor = (pct) => {
-    if (pct >= 70) return '#166534'; // Óptimo (Verde)
-    if (pct >= 40) return '#F59E0B'; // Bajo (Amarillo/Naranja)
-    return '#EF4444'; // Crítico (Rojo)
-  };
-
-  const color = getColor(percentage);
 
   return (
     <View style={{ alignItems: 'center', justifyContent: 'center', height: 160 }}>
       <View style={{ height: radius + strokeWidth, width: (radius + strokeWidth) * 2, overflow: 'hidden' }}>
         <Svg width={(radius + strokeWidth) * 2} height={(radius + strokeWidth) * 2}>
-          {/* Background Track */}
           <Path
             d={`M ${strokeWidth},${radius + strokeWidth} A ${radius},${radius} 0 0 1 ${radius * 2 + strokeWidth},${radius + strokeWidth}`}
-            stroke="#E5E7EB"
+            stroke={isDarkMode ? '#1E293B' : '#E5E7EB'}
             strokeWidth={strokeWidth}
             fill="none"
             strokeLinecap="round"
             style={{ transform: [{ rotate: '180deg' }], transformOrigin: 'center' }}
           />
-          {/* Progress Track */}
           <Path
             d={`M ${strokeWidth},${radius + strokeWidth} A ${radius},${radius} 0 0 1 ${radius * 2 + strokeWidth},${radius + strokeWidth}`}
-            stroke={color}
+            stroke="#059669"
             strokeWidth={strokeWidth}
             fill="none"
             strokeLinecap="round"
@@ -64,33 +52,28 @@ const SemiCircleGauge = ({ percentage }) => {
         </Svg>
       </View>
       <View style={{ marginTop: 16, alignItems: 'center' }}>
-        <Text style={{ fontSize: 56, fontWeight: '800', color: '#111827' }}>{percentage}%</Text>
+        <Text style={{ fontSize: 56, fontWeight: '800', color: theme.colors.text }}>{percentage}%</Text>
       </View>
     </View>
   );
 };
 
 export const Pagina_principal = () => {
-  const [solarValue, setSolarValue] = useState('840W/m²');
-  const [humidityValue, setHumidityValue] = useState('42%');
-  
-  // Modal State
+  const { theme, isDarkMode } = useTheme();
+  const [solarValue] = useState('840W/m²');
+  const [humidityValue] = useState('42%');
   const [modalVisible, setModalVisible] = useState(false);
   
-  // Crop Menu State
-  const [showCropMenu, setShowCropMenu] = useState(false);
-  const crops = ['Trigo'];
-  
-  // Form State
   const [region, setRegion] = useState('Seleccionar región');
   const [area, setArea] = useState('');
   const [cropType, setCropType] = useState('Seleccionar cultivo');
   const [cultivationDate, setCultivationDate] = useState(new Date());
   const [harvestDate, setHarvestDate] = useState(new Date());
   
-  // Date Picker States
   const [showCultivationPicker, setShowCultivationPicker] = useState(false);
   const [showHarvestPicker, setShowHarvestPicker] = useState(false);
+  const [showCropMenu, setShowCropMenu] = useState(false);
+  const crops = ['Trigo'];
 
   const onCultivationChange = (event, selectedDate) => {
     setShowCultivationPicker(false);
@@ -103,165 +86,141 @@ export const Pagina_principal = () => {
   };
 
   const formatDate = (date) => {
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString('es-ES', {
       month: '2-digit',
       day: '2-digit',
       year: 'numeric',
     });
   };
 
-  // Swipe to close logic
-  const panY = useState(new Animated.Value(0))[0];
-  const panResponder = useState(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderMove: (e, gestureState) => {
-        if (gestureState.dy > 0) {
-          panY.setValue(gestureState.dy);
-        }
-      },
-      onPanResponderRelease: (e, gestureState) => {
-        if (gestureState.dy > 100) {
-          setModalVisible(false);
-          Animated.timing(panY, {
-            toValue: 0,
-            duration: 200,
-            useNativeDriver: true,
-          }).start();
-        } else {
-          Animated.spring(panY, {
-            toValue: 0,
-            useNativeDriver: true,
-          }).start();
-        }
-      },
-    })
-  )[0];
-
-  const modalAnimatedStyle = {
-    transform: [{ translateY: panY }],
-  };
+  const styles = getStyles(theme, isDarkMode);
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      
-      {/* Custom Header */}
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <View style={styles.avatar}>
-            <User color="#FFFFFF" size={20} />
-          </View>
-          <Text style={styles.headerTitle}>Agro IA</Text>
-        </View>
-      </View>
-      <View style={styles.headerBorder} />
-
-      {/* Main Content */}
+      <StatusBar style={isDarkMode ? 'light' : 'dark'} />
       <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         
-        {/* Card 1: Simulación de Campo */}
-        <View style={styles.cardWrapper}>
-          <LinearGradient
-            colors={['#1F4037', '#105646']} // Dark green background for simulation
-            style={styles.simCard}
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 1}}
+        {/* Simulación de Campo Card */}
+        <View style={styles.mainCard}>
+          <ImageBackground 
+            source={require('../../../assets/farm_simulation.jpg')}
+            style={styles.cardImageBackground}
+            imageStyle={{ borderRadius: 32 }}
           >
-            <View style={styles.badgeLive}>
-              <Text style={styles.badgeLiveText}>EN VIVO</Text>
-            </View>
-            <Text style={styles.simTitle}>Simulación de Campo</Text>
-            
-            <View style={styles.simMetrics}>
-              <View style={styles.glassBox}>
-                <View style={styles.glassRow}>
-                  <Sun color="#111827" size={12} />
-                  <Text style={styles.glassLabel}>SOLAR</Text>
-                </View>
-                <Text style={styles.glassValue}>{solarValue}</Text>
+            <LinearGradient
+              colors={['rgba(13, 27, 42, 0.2)', 'rgba(13, 27, 42, 0.7)']}
+              style={styles.cardGradientOverlay}
+            >
+              <View style={styles.liveBadge}>
+                <Text style={styles.liveBadgeText}>EN VIVO</Text>
               </View>
               
-              <View style={styles.glassBox}>
-                <View style={styles.glassRow}>
-                  <Droplet color="#111827" size={12} />
-                  <Text style={styles.glassLabel}>HUMEDAD</Text>
+              <Text style={styles.simTitle}>Simulación de Campo</Text>
+
+              <View style={styles.statsPillsRow}>
+                <View style={styles.statPill}>
+                  <View style={styles.pillIconContainer}>
+                    <Sun color={theme.colors.primary} size={14} />
+                  </View>
+                  <View>
+                    <Text style={styles.pillLabel}>SOLAR</Text>
+                    <Text style={styles.pillValue}>{solarValue}</Text>
+                  </View>
                 </View>
-                <Text style={styles.glassValue}>{humidityValue}</Text>
+
+                <View style={styles.statPill}>
+                  <View style={styles.pillIconContainer}>
+                    <Droplet color="#3B82F6" size={14} />
+                  </View>
+                  <View>
+                    <Text style={styles.pillLabel}>HUMEDAD</Text>
+                    <Text style={styles.pillValue}>{humidityValue}</Text>
+                  </View>
+                </View>
               </View>
-            </View>
-          </LinearGradient>
+            </LinearGradient>
+          </ImageBackground>
         </View>
 
-        {/* Card 2: Salud del Ecosistema */}
-        <View style={styles.cardLight}>
-          <Text style={styles.cardHeaderSmall}>SALUD DEL ECOSISTEMA</Text>
-          <View style={styles.healthRow}>
-            <Text style={styles.healthBigText}>98%</Text>
-            <Text style={styles.healthStatusText}>Eficiencia Óptima</Text>
+        {/* Salud del Ecosistema */}
+        <Card style={styles.infoCard}>
+          <Text style={styles.cardPreTitle}>SALUD DEL ECOSISTEMA</Text>
+          <View style={styles.efficiencyRow}>
+            <Text style={styles.efficiencyValue}>98%</Text>
+            <Text style={styles.efficiencyLabel}>Eficiencia Óptima</Text>
           </View>
-          <Text style={styles.cardDescription}>
+          <Text style={styles.cardDesc}>
             Cultivos de maíz en pico de fotosíntesis con absorción de nutrientes detectada.
           </Text>
-          {/* Progress Bar */}
-          <View style={styles.progressBarTrack}>
+          <View style={styles.progressBarBg}>
             <View style={[styles.progressBarFill, { width: '98%' }]} />
           </View>
-        </View>
+        </Card>
 
-        {/* Card 3: Sugerencias IA */}
-        <View style={styles.cardDarkGreen}>
-          <View style={styles.iaHeaderRow}>
-            <BrainCircuit color="#FFFFFF" size={16} />
-            <Text style={styles.iaHeaderText}>SUGERENCIAS IA</Text>
+        {/* Sugerencias IA */}
+        <TouchableOpacity activeOpacity={0.9} style={styles.aiCard}>
+          <View style={styles.aiHeader}>
+            <View style={styles.aiIconWrapper}>
+              <LayoutGrid color="#FFF" size={16} />
+            </View>
+            <Text style={styles.aiTitle}>SUGERENCIAS IA</Text>
           </View>
-          <Text style={styles.iaSubtitle}>Ventana Recomendada</Text>
-          <Text style={styles.iaBigText}>Riego óptimo:{'\n'}6:00 AM - 8:00 AM</Text>
-          <Text style={styles.iaDescription}>
+          <Text style={styles.aiSubtitle}>Ventana Recomendada</Text>
+          <Text style={styles.aiMainText}>Riego óptimo:{'\n'}6:00 AM - 8:00 AM</Text>
+          <Text style={styles.aiFooterText}>
             Mejor retención hídrica (+12%) basada en pérdida evaporativa y viento.
           </Text>
-        </View>
-
-        {/* Card 4: Humedad del Suelo */}
-        <View style={styles.cardLight}>
-          <View style={styles.soilHeader}>
-            <View>
-              <Text style={styles.soilTitle}>Humedad del Suelo</Text>
-              <Text style={styles.soilSubtitle}>Sonda en tiempo real</Text>
-            </View>
-            <View style={styles.badgeOptimo}>
-              <Text style={styles.badgeOptimoText}>ÓPTIMO</Text>
-            </View>
-          </View>
           
-          <View style={styles.gaugeContainer}>
-            <SemiCircleGauge percentage={75} />
-            <View style={styles.gaugeLabelsRow}>
-              <Text style={styles.gaugeLabelText}>Seco</Text>
-              <Text style={styles.gaugeLabelText}>Húmedo</Text>
+          <View style={styles.aiDecoration}>
+            <Svg width="100" height="100" viewBox="0 0 100 100">
+              <Path 
+                d="M 100 0 A 100 100 0 0 0 0 100" 
+                fill="none" 
+                stroke="rgba(255,255,255,0.1)" 
+                strokeWidth="20" 
+              />
+            </Svg>
+          </View>
+        </TouchableOpacity>
+
+        {/* Humedad del Suelo */}
+        <Card style={styles.gaugeCard}>
+          <View style={styles.gaugeHeader}>
+            <View>
+              <Text style={styles.gaugeTitle}>Humedad del Suelo</Text>
+              <Text style={styles.gaugeSubtitle}>Sonda en tiempo real</Text>
+            </View>
+            <View style={styles.statusBadge}>
+              <Text style={styles.statusBadgeText}>ÓPTIMO</Text>
             </View>
           </View>
-        </View>
 
-        {/* Extra padding at bottom for FAB */}
-        <View style={{height: 100}} />
+          <SemiCircleGauge percentage={75} theme={theme} isDarkMode={isDarkMode} />
+
+          <View style={styles.gaugeFooter}>
+            <Text style={styles.gaugeFooterText}>Seco</Text>
+            <Text style={styles.gaugeFooterText}>Húmedo</Text>
+          </View>
+        </Card>
+
+        <View style={{ height: 120 }} />
       </ScrollView>
 
-      {/* Floating Action Button */}
-      <View style={styles.fabContainer}>
-        <View style={styles.fabLabel}>
-          <Text style={styles.fabLabelText}>Nuevo Lote</Text>
+      {/* Floating Plus Button */}
+      <View style={styles.floatingContainer}>
+        <View style={styles.plusTooltip}>
+          <Text style={styles.tooltipText}>Nuevo Lote</Text>
         </View>
         <TouchableOpacity 
-          style={styles.fabButton} 
-          activeOpacity={0.8}
+          style={styles.floatingButton}
           onPress={() => setModalVisible(true)}
+          activeOpacity={0.8}
         >
-          <Plus color="#FFFFFF" size={32} />
+          <Plus color="#FFF" size={32} />
         </TouchableOpacity>
       </View>
 
-      {/* Modal Agregar Nueva Parcela */}
+      {/* Add New Field Modal (kept from before) */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -273,52 +232,43 @@ export const Pagina_principal = () => {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.modalContainer}
           >
-            <Animated.View 
-              style={[styles.modalContent, modalAnimatedStyle]}
-              {...panResponder.panHandlers}
-            >
-              {/* Handle Bar */}
+            <View style={styles.modalContent}>
               <View style={styles.modalHandle} />
-
-              {/* Modal Header */}
+              
               <View style={styles.modalHeader}>
                 <View>
-                  <Text style={styles.modalTitle}>Agregar Nueva Parcela</Text>
-                  <Text style={styles.modalSubtitle}>
-                    Ingrese los detalles técnicos para iniciar el monitoreo AI.
-                  </Text>
+                  <Text style={styles.modalTitle}>Nuevo Lote</Text>
+                  <Text style={styles.modalSubtitle}>Configura los parámetros para tu nueva zona de cultivo.</Text>
                 </View>
+                <TouchableOpacity onPress={() => setModalVisible(false)}>
+                  <X color={theme.colors.textSecondary} size={24} />
+                </TouchableOpacity>
               </View>
 
-              {/* Form Fields */}
               <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.formContent}>
-                
-                {/* UBICACIÓN */}
                 <View style={styles.inputGroup}>
-                  <Text style={styles.inputLabel}>UBICACIÓN</Text>
+                  <Text style={styles.inputLabel}>REGIÓN / SECTOR</Text>
                   <TouchableOpacity style={styles.selectInput}>
                     <Text style={styles.selectText}>{region}</Text>
-                    <ChevronDown color="#9CA3AF" size={20} />
+                    <ChevronDown color={theme.colors.textSecondary} size={20} />
                   </TouchableOpacity>
                 </View>
 
-                {/* ÁREA */}
                 <View style={styles.inputGroup}>
-                  <Text style={styles.inputLabel}>ÁREA (HECTÁREAS)</Text>
+                  <Text style={styles.inputLabel}>SUPERFICIE DEL LOTE</Text>
                   <View style={styles.textInputWrapper}>
-                    <TextInput
+                    <TextInput 
                       style={styles.textInput}
-                      placeholder="0.00"
+                      placeholder="Ej. 15.5"
+                      placeholderTextColor={theme.colors.textSecondary}
                       keyboardType="numeric"
                       value={area}
                       onChangeText={setArea}
-                      placeholderTextColor="#9CA3AF"
                     />
-                    <Text style={styles.inputUnit}>HA</Text>
+                    <Text style={styles.inputUnit}>HECTÁREAS</Text>
                   </View>
                 </View>
 
-                {/* TIPO DE CULTIVO */}
                 <View style={styles.inputGroup}>
                   <Text style={styles.inputLabel}>TIPO DE CULTIVO</Text>
                   <TouchableOpacity 
@@ -326,14 +276,13 @@ export const Pagina_principal = () => {
                     onPress={() => setShowCropMenu(!showCropMenu)}
                   >
                     <Text style={styles.selectText}>{cropType}</Text>
-                    <Tractor color="#9CA3AF" size={20} />
+                    <ChevronDown color={theme.colors.textSecondary} size={20} />
                   </TouchableOpacity>
-                  
                   {showCropMenu && (
                     <View style={styles.menuContainer}>
-                      {crops.map((crop) => (
+                      {crops.map(crop => (
                         <TouchableOpacity 
-                          key={crop}
+                          key={crop} 
                           style={styles.menuItem}
                           onPress={() => {
                             setCropType(crop);
@@ -347,10 +296,9 @@ export const Pagina_principal = () => {
                   )}
                 </View>
 
-                {/* FECHAS ROW */}
                 <View style={styles.datesRow}>
                   <View style={[styles.inputGroup, { flex: 1 }]}>
-                    <Text style={styles.inputLabel}>FECHA DE CULTIVO</Text>
+                    <Text style={styles.inputLabel}>FECHA DE SIEMBRA</Text>
                     <TouchableOpacity 
                       style={styles.dateInput}
                       onPress={() => setShowCultivationPicker(true)}
@@ -359,7 +307,7 @@ export const Pagina_principal = () => {
                     </TouchableOpacity>
                   </View>
                   <View style={[styles.inputGroup, { flex: 1 }]}>
-                    <Text style={styles.inputLabel}>PREVISTA COSECHA</Text>
+                    <Text style={styles.inputLabel}>EST. COSECHA</Text>
                     <TouchableOpacity 
                       style={styles.dateInput}
                       onPress={() => setShowHarvestPicker(true)}
@@ -369,326 +317,288 @@ export const Pagina_principal = () => {
                   </View>
                 </View>
 
-                {/* Submit Button */}
+                {showCultivationPicker && (
+                  <DateTimePicker
+                    value={cultivationDate}
+                    mode="date"
+                    display="default"
+                    onChange={onCultivationChange}
+                  />
+                )}
+
+                {showHarvestPicker && (
+                  <DateTimePicker
+                    value={harvestDate}
+                    mode="date"
+                    display="default"
+                    onChange={onHarvestChange}
+                  />
+                )}
+
                 <TouchableOpacity 
                   style={styles.submitButton}
                   onPress={() => setModalVisible(false)}
                 >
-                  <Text style={styles.submitButtonText}>Registrar Parcela</Text>
+                  <Text style={styles.submitButtonText}>Registrar Lote</Text>
                 </TouchableOpacity>
 
-                {/* Cancel Link */}
                 <TouchableOpacity 
                   style={styles.cancelButton}
                   onPress={() => setModalVisible(false)}
                 >
                   <Text style={styles.cancelButtonText}>Cancelar</Text>
                 </TouchableOpacity>
-
               </ScrollView>
-            </Animated.View>
+            </View>
           </KeyboardAvoidingView>
         </View>
-
-        {/* DateTime Pickers - Styled as overlay to avoid layout issues */}
-        {(showCultivationPicker || showHarvestPicker) && (
-          <View style={styles.datePickerOverlay}>
-            <View style={styles.datePickerContainer}>
-              <View style={styles.datePickerHeader}>
-                <TouchableOpacity onPress={() => {
-                  setShowCultivationPicker(false);
-                  setShowHarvestPicker(false);
-                }}>
-                  <Text style={styles.datePickerDone}>Listo</Text>
-                </TouchableOpacity>
-              </View>
-              <DateTimePicker
-                value={showCultivationPicker ? cultivationDate : harvestDate}
-                mode="date"
-                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                onChange={showCultivationPicker ? onCultivationChange : onHarvestChange}
-                textColor="#111827"
-              />
-            </View>
-          </View>
-        )}
       </Modal>
-
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (theme, isDarkMode) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: theme.colors.background,
   },
-  header: {
-    flexDirection: 'row',
+  scrollContainer: {
+    padding: 24,
+  },
+  mainCard: {
+    borderRadius: 32,
+    overflow: 'hidden',
+    marginBottom: 24,
+    height: 240,
+    ...theme.shadows.soft,
+  },
+  cardImageBackground: {
+    flex: 1,
+  },
+  cardGradientOverlay: {
+    flex: 1,
+    padding: 24,
     justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    backgroundColor: '#FFFFFF',
   },
-  headerLeft: {
+  liveBadge: {
+    backgroundColor: '#065F46',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
+    alignSelf: 'flex-start',
+  },
+  liveBadgeText: {
+    color: '#FFF',
+    fontSize: 10,
+    fontWeight: '800',
+  },
+  simTitle: {
+    color: '#FFF',
+    fontSize: 28,
+    fontWeight: '800',
+    marginTop: 8,
+  },
+  statsPillsRow: {
     flexDirection: 'row',
-    alignItems: 'center',
     gap: 12,
   },
-  avatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#1F2937',
+  statPill: {
+    flex: 1,
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    borderRadius: 20,
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  pillIconContainer: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#F3F4F6',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  headerTitle: {
-    fontSize: 18,
+  pillLabel: {
+    fontSize: 7,
     fontWeight: '700',
-    color: '#166534',
+    color: '#6B7280',
   },
-  bellButton: {
-    position: 'relative',
-    padding: 4,
-  },
-  redDot: {
-    position: 'absolute',
-    top: 4,
-    right: 4,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#EF4444',
-    borderWidth: 1,
-    borderColor: '#FFFFFF',
-  },
-  headerBorder: {
-    height: 2,
-    backgroundColor: '#3B82F6', // Blue separator line
-    width: '100%',
-  },
-  scrollContainer: {
-    padding: 16,
-    gap: 16,
-  },
-  cardWrapper: {
-    borderRadius: 24,
-    overflow: 'hidden',
-  },
-  simCard: {
-    padding: 24,
-    borderRadius: 24,
-    minHeight: 180,
-  },
-  badgeLive: {
-    backgroundColor: '#16A34A',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-    marginBottom: 12,
-  },
-  badgeLiveText: {
-    color: '#FFFFFF',
-    fontSize: 10,
-    fontWeight: 'bold',
-    letterSpacing: 0.5,
-  },
-  simTitle: {
-    color: '#FFFFFF',
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  simMetrics: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  glassBox: {
-    flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 16,
-    padding: 12,
-  },
-  glassRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginBottom: 4,
-  },
-  glassLabel: {
-    fontSize: 10,
-    color: '#4B5563',
-    fontWeight: '700',
-    letterSpacing: 0.5,
-  },
-  glassValue: {
-    fontSize: 16,
+  pillValue: {
+    fontSize: 12,
     fontWeight: '800',
     color: '#111827',
   },
-  cardLight: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 24,
+  infoCard: {
     padding: 24,
+    marginBottom: 24,
   },
-  cardHeaderSmall: {
+  cardPreTitle: {
     fontSize: 10,
-    fontWeight: '700',
-    color: '#6B7280',
+    fontWeight: '800',
+    color: theme.colors.textSecondary,
     letterSpacing: 1,
-    marginBottom: 12,
+    marginBottom: 8,
   },
-  healthRow: {
+  efficiencyRow: {
     flexDirection: 'row',
     alignItems: 'baseline',
     gap: 8,
-    marginBottom: 8,
-  },
-  healthBigText: {
-    fontSize: 48,
-    fontWeight: '800',
-    color: '#166534',
-  },
-  healthStatusText: {
-    fontSize: 14,
-    color: '#4B5563',
-  },
-  cardDescription: {
-    fontSize: 14,
-    color: '#4B5563',
-    lineHeight: 20,
-    marginBottom: 16,
-  },
-  progressBarTrack: {
-    height: 8,
-    backgroundColor: '#E5E7EB',
-    borderRadius: 4,
-  },
-  progressBarFill: {
-    height: 8,
-    backgroundColor: '#166534',
-    borderRadius: 4,
-  },
-  cardDarkGreen: {
-    backgroundColor: '#166534', // Solid dark green for IA Suggestions
-    borderRadius: 24,
-    padding: 24,
-  },
-  iaHeaderRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 16,
-  },
-  iaHeaderText: {
-    color: '#FFFFFF',
-    fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 1,
-  },
-  iaSubtitle: {
-    color: '#A7F3D0', // Light green text
-    fontSize: 12,
-    marginBottom: 4,
-  },
-  iaBigText: {
-    color: '#FFFFFF',
-    fontSize: 22,
-    fontWeight: 'bold',
     marginBottom: 12,
   },
-  iaDescription: {
-    color: '#D1FAE5', // Light green
+  efficiencyValue: {
+    fontSize: 48,
+    fontWeight: '900',
+    color: '#065F46',
+  },
+  efficiencyLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: theme.colors.textSecondary,
+  },
+  cardDesc: {
+    fontSize: 14,
+    color: theme.colors.text,
+    lineHeight: 20,
+    marginBottom: 20,
+  },
+  progressBarBg: {
+    height: 6,
+    backgroundColor: isDarkMode ? '#1E293B' : '#E5E7EB',
+    borderRadius: 3,
+    overflow: 'hidden',
+  },
+  progressBarFill: {
+    height: '100%',
+    backgroundColor: '#065F46',
+  },
+  aiCard: {
+    backgroundColor: '#064E3B',
+    borderRadius: 32,
+    padding: 24,
+    marginBottom: 24,
+    overflow: 'hidden',
+  },
+  aiHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 20,
+  },
+  aiIconWrapper: {
+    width: 32,
+    height: 32,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  aiTitle: {
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 1,
+  },
+  aiSubtitle: {
+    color: 'rgba(255,255,255,0.8)',
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  aiMainText: {
+    color: '#FFF',
+    fontSize: 24,
+    fontWeight: '800',
+    lineHeight: 30,
+    marginBottom: 20,
+  },
+  aiFooterText: {
+    color: 'rgba(255,255,255,0.6)',
     fontSize: 12,
     lineHeight: 18,
   },
-  soilHeader: {
+  aiDecoration: {
+    position: 'absolute',
+    top: -20,
+    right: -20,
+  },
+  gaugeCard: {
+    padding: 24,
+    marginBottom: 24,
+  },
+  gaugeHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 24,
+    marginBottom: 20,
   },
-  soilTitle: {
+  gaugeTitle: {
     fontSize: 18,
-    fontWeight: '700',
-    color: '#111827',
+    fontWeight: '800',
+    color: theme.colors.text,
   },
-  soilSubtitle: {
+  gaugeSubtitle: {
     fontSize: 12,
-    color: '#6B7280',
-    marginTop: 2,
+    color: theme.colors.textSecondary,
   },
-  badgeOptimo: {
-    backgroundColor: '#DCFCE7',
+  statusBadge: {
+    backgroundColor: '#D1FAE5',
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 12,
+    borderRadius: 6,
   },
-  badgeOptimoText: {
-    color: '#166534',
+  statusBadgeText: {
+    color: '#065F46',
     fontSize: 10,
-    fontWeight: 'bold',
+    fontWeight: '800',
   },
-  gaugeContainer: {
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  gaugeLabelsRow: {
+  gaugeFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '100%',
-    paddingHorizontal: 30,
     marginTop: 8,
   },
-  gaugeLabelText: {
+  gaugeFooterText: {
     fontSize: 10,
-    color: '#6B7280',
-    fontWeight: '600',
+    fontWeight: '700',
+    color: theme.colors.textSecondary,
   },
-  fabContainer: {
+  floatingContainer: {
     position: 'absolute',
-    bottom: 20,
-    right: 20,
+    bottom: 30,
+    right: 24,
     alignItems: 'center',
+    gap: 12,
   },
-  fabLabel: {
-    backgroundColor: '#374151',
+  plusTooltip: {
+    backgroundColor: '#334155',
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 16,
-    marginBottom: 8,
+    borderRadius: 10,
   },
-  fabLabelText: {
-    color: '#FFFFFF',
+  tooltipText: {
+    color: '#FFF',
     fontSize: 10,
-    fontWeight: 'bold',
+    fontWeight: '800',
   },
-  fabButton: {
-    backgroundColor: '#166534',
+  floatingButton: {
+    backgroundColor: '#065F46',
     width: 64,
     height: 64,
     borderRadius: 32,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
+    ...theme.shadows.glow,
   },
+  // Modal Styles (Keeping existing modal styles)
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
     justifyContent: 'flex-end',
   },
   modalContainer: {
     backgroundColor: 'transparent',
   },
   modalContent: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.surface,
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
     paddingHorizontal: 24,
@@ -699,7 +609,7 @@ const styles = StyleSheet.create({
   modalHandle: {
     width: 40,
     height: 4,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: theme.colors.border,
     borderRadius: 2,
     alignSelf: 'center',
     marginBottom: 20,
@@ -713,16 +623,13 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 24,
     fontWeight: '800',
-    color: '#064E3B', // Darker green
+    color: theme.colors.primary,
     marginBottom: 4,
   },
   modalSubtitle: {
     fontSize: 14,
-    color: '#6B7280',
+    color: theme.colors.textSecondary,
     maxWidth: '85%',
-  },
-  closeButton: {
-    padding: 4,
   },
   formContent: {
     gap: 20,
@@ -733,26 +640,26 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#374151',
+    color: theme.colors.textSecondary,
     letterSpacing: 1,
   },
   selectInput: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#F3F4F6',
+    backgroundColor: theme.colors.surfaceHighlight,
     borderRadius: 12,
     paddingHorizontal: 16,
     height: 56,
   },
   selectText: {
     fontSize: 16,
-    color: '#4B5563',
+    color: theme.colors.text,
   },
   textInputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F3F4F6',
+    backgroundColor: theme.colors.surfaceHighlight,
     borderRadius: 12,
     paddingHorizontal: 16,
     height: 56,
@@ -760,19 +667,19 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     fontSize: 16,
-    color: '#111827',
+    color: theme.colors.text,
   },
   inputUnit: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#9CA3AF',
+    color: theme.colors.textSecondary,
   },
   datesRow: {
     flexDirection: 'row',
     gap: 12,
   },
   dateInput: {
-    backgroundColor: '#F3F4F6',
+    backgroundColor: theme.colors.surfaceHighlight,
     borderRadius: 12,
     paddingHorizontal: 16,
     height: 56,
@@ -780,20 +687,15 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 14,
-    color: '#4B5563',
+    color: theme.colors.text,
   },
   submitButton: {
-    backgroundColor: '#064E3B',
+    backgroundColor: theme.colors.primary,
     borderRadius: 16,
     height: 64,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
-    shadowColor: '#064E3B',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
   },
   submitButtonText: {
     color: '#FFFFFF',
@@ -801,62 +703,28 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   cancelButton: {
-    paddingVertical: 12,
     alignItems: 'center',
+    paddingVertical: 12,
   },
   cancelButtonText: {
-    fontSize: 16,
+    color: theme.colors.textSecondary,
+    fontSize: 14,
     fontWeight: '600',
-    color: '#4B5563',
   },
   menuContainer: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.surface,
     borderRadius: 12,
     marginTop: 4,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    borderColor: theme.colors.border,
+    padding: 4,
   },
   menuItem: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+    padding: 12,
+    borderRadius: 8,
   },
   menuItemText: {
+    color: theme.colors.text,
     fontSize: 16,
-    color: '#111827',
-  },
-  datePickerOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1000,
-  },
-  datePickerContainer: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 20,
-    width: '90%',
-    alignItems: 'center',
-  },
-  datePickerHeader: {
-    width: '100%',
-    alignItems: 'flex-end',
-    marginBottom: 10,
-  },
-  datePickerDone: {
-    color: '#064E3B',
-    fontSize: 16,
-    fontWeight: 'bold',
   }
 });
