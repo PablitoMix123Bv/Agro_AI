@@ -29,6 +29,55 @@ export const Registrar_usuario = ({ navigation }) => {
 
   const styles = getStyles(theme, isDarkMode);
 
+  // funciones de signup
+  const handleSignUp = async () => {
+    // 1. Validaciones previas
+    if (!name || !email || !password || !confirmPassword) {
+      alert("Por favor, llena todos los campos");
+      return;
+    }
+    if (password !== confirmPassword) {
+      alert("Las contraseñas no coinciden");
+      return;
+    }
+    if (!termsAccepted) {
+      alert("Debes aceptar los términos y condiciones");
+      return;
+    }
+
+    try {
+      // 2. Petición al Backend (Usa la IP de tu ROG Strix)
+      const response = await fetch('http://172.20.10.7:5000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre: name,
+          email: email,
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("¡Usuario creado con éxito!");
+        navigation.replace('MainTabs'); 
+      } else {
+        alert(data.msg || "Error al registrar");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("No se pudo conectar con el servidor. Verifica que el backend esté corriendo y la IP sea correcta.");
+    }
+  };
+
+
+  //////////////////////
+
+
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style={isDarkMode ? 'light' : 'dark'} />
@@ -142,9 +191,8 @@ export const Registrar_usuario = ({ navigation }) => {
               <TouchableOpacity 
                 style={[styles.createButton, !termsAccepted && styles.createButtonDisabled]}
                 disabled={!termsAccepted}
-                onPress={() => {
-                  navigation.replace('MainTabs'); 
-                }}
+                /// manda a llamar a la función de registro al backend
+                onPress={handleSignUp}
               >
                 <Text style={styles.createButtonText}>Crear Cuenta</Text>
                 <ArrowRight color="#FFFFFF" size={20} />
