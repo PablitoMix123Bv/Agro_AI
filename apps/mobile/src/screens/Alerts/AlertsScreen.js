@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, Image, TouchableOpacity } from 'react-native';
 import { theme } from '../../theme/theme';
 import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
-import { AlertTriangle, BrainCircuit, CheckCircle2, Clock, Droplets, Thermometer, FlaskConical, CloudRain, Sprout } from 'lucide-react-native';
+import { AlertTriangle, BrainCircuit, CheckCircle2, Clock, Droplets, Thermometer, FlaskConical, CloudRain, Sprout, Bell } from 'lucide-react-native';
 
 export const AlertsScreen = () => {
   return (
@@ -13,12 +13,14 @@ export const AlertsScreen = () => {
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.brandInfo}>
-            <Sprout color={theme.colors.primaryDark} size={20} />
+            <View style={styles.avatar}>
+               <UserPlaceholder />
+            </View>
             <Text style={styles.brandName}>Agro AI</Text>
           </View>
-          <View style={styles.avatar}>
-             <UserPlaceholder />
-          </View>
+          <TouchableOpacity>
+            <Bell color={theme.colors.primaryDark} size={24} />
+          </TouchableOpacity>
         </View>
 
         <View style={styles.titleContainer}>
@@ -148,10 +150,10 @@ const MetricRow = ({ label, value, valueColor, icon }) => (
 );
 
 const UserPlaceholder = () => (
-  <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: '#111827', overflow: 'hidden', justifyContent: 'center', alignItems: 'center' }}>
-    <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: '#FFF', alignSelf: 'center', marginTop: 2 }} />
-    <View style={{ width: 20, height: 12, borderRadius: 8, backgroundColor: '#FFF', alignSelf: 'center', marginTop: 2 }} />
-  </View>
+  <Image 
+    source={require('../../../assets/logo.png')}
+    style={{ width: 32, height: 32, borderRadius: 8 }} 
+  />
 );
 
 const styles = StyleSheet.create({

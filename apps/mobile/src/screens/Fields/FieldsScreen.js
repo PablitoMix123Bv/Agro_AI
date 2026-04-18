@@ -156,10 +156,10 @@ export const FieldsScreen = () => {
 
 // Mini components for icons to match design
 const UserPlaceholder = () => (
-  <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: '#D1D5DB', overflow: 'hidden' }}>
-    <View style={{ width: 14, height: 14, borderRadius: 7, backgroundColor: '#9CA3AF', alignSelf: 'center', marginTop: 4 }} />
-    <View style={{ width: 24, height: 16, borderRadius: 8, backgroundColor: '#9CA3AF', alignSelf: 'center', marginTop: 2 }} />
-  </View>
+  <Image 
+    source={require('../../../assets/logo.png')}
+    style={{ width: 32, height: 32, borderRadius: 8 }} 
+  />
 );
 
 const SproutIcon = () => (

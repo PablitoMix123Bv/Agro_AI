@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, Switch, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, Switch, TouchableOpacity, Image } from 'react-native';
 import { theme } from '../../theme/theme';
 import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
@@ -110,10 +110,10 @@ export const ProfileScreen = () => {
 };
 
 const UserPlaceholder = () => (
-  <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: '#111827', overflow: 'hidden', justifyContent: 'center', alignItems: 'center' }}>
-    <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: '#FFF', alignSelf: 'center', marginTop: 2 }} />
-    <View style={{ width: 20, height: 12, borderRadius: 8, backgroundColor: '#FFF', alignSelf: 'center', marginTop: 2 }} />
-  </View>
+  <Image 
+    source={require('../../../assets/logo.png')}
+    style={{ width: 32, height: 32, borderRadius: 8 }} 
+  />
 );
 
 const styles = StyleSheet.create({

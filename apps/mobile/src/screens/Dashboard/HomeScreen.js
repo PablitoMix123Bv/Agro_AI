@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, Image } from 'react-native';
 import { theme } from '../../theme/theme';
 import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
@@ -16,14 +16,14 @@ export const HomeScreen = () => {
             <Text style={styles.greeting}>Hola, Agricultor</Text>
             <Text style={styles.subtitle}>Tu cultivo está en estado óptimo</Text>
           </View>
-          <View style={styles.avatarPlaceholder} />
+          <Image source={require('../../../assets/logo.png')} style={styles.avatarPlaceholder} />
         </View>
 
         {/* AI Insight Card */}
         <Card variant="glow" style={styles.insightCard}>
           <View style={styles.insightHeader}>
             <BrainCircuit color={theme.colors.primary} size={24} />
-            <Text style={styles.insightTitle}>AgroSmart AI Insight</Text>
+            <Text style={styles.insightTitle}>Agro AI Insight</Text>
           </View>
           <Text style={styles.insightText}>
             Basado en las proyecciones climáticas, se recomienda retrasar el riego 2 horas. Probabilidad de lluvia: 85%.

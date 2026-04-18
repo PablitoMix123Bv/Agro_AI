@@ -30,7 +30,7 @@ export const IrrigationScreen = () => {
           </View>
           <Text style={styles.modeDescription}>
             {isAutoMode 
-              ? "AgroSmart AI está gestionando el riego basado en sensores y clima."
+              ? "Agro AI está gestionando el riego basado en sensores y clima."
               : "Modo manual activo. Tú controlas cuándo y cuánto regar."}
           </Text>
         </Card>

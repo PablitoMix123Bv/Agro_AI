@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity, Image } from 'react-native';
 import { theme } from '../../theme/theme';
 import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
@@ -17,7 +17,7 @@ export const StatsScreen = () => {
             <View style={styles.avatar}>
                <UserPlaceholder />
             </View>
-            <Text style={styles.brandName}>AgroSmart AI</Text>
+            <Text style={styles.brandName}>Agro AI</Text>
           </View>
           <TouchableOpacity>
             <Bell color={theme.colors.primaryDark} size={24} />
@@ -169,10 +169,10 @@ const HistoryItem = ({ title, time, type, isLast }) => {
 };
 
 const UserPlaceholder = () => (
-  <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: '#111827', overflow: 'hidden', justifyContent: 'center', alignItems: 'center' }}>
-    <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: '#FFF', alignSelf: 'center', marginTop: 2 }} />
-    <View style={{ width: 20, height: 12, borderRadius: 8, backgroundColor: '#FFF', alignSelf: 'center', marginTop: 2 }} />
-  </View>
+  <Image 
+    source={require('../../../assets/logo.png')}
+    style={{ width: 32, height: 32, borderRadius: 8 }} 
+  />
 );
 
 const styles = StyleSheet.create({
